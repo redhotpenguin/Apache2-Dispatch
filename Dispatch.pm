@@ -73,7 +73,7 @@ sub handler {
 # do some preliminary stuff...
 #---------------------------------------------------------------------
   
-  $log->info("Using Apache::Dispatch");
+  $log->info("Using Apache::Dispatch") if $debug > 0;
 
   # redefine $r as necessary for Apache::Filter 1.013 and above
   if ($filter) {
@@ -128,7 +128,7 @@ sub handler {
   unless ($class && $method) {
     $log->info("\tclass and method could not be discovered")
        if $debug;
-    $log->info("Exiting Apache::Dispatch");
+    $log->info("Exiting Apache::Dispatch") if $debug > 0;
     return DECLINED;
   }
 
@@ -220,7 +220,6 @@ sub handler {
 #---------------------------------------------------------------------
 # since the uri is dispatchable, check each of the extras
 #---------------------------------------------------------------------
-
   foreach my $extra (@extras) {
     if ($extra eq "PRE") {
       $prehandler    = _check_dispatch($object, "pre_dispatch", 
@@ -235,11 +234,11 @@ sub handler {
                                        $autoload, $log, $debug);
     }
   }
-  
+
 #---------------------------------------------------------------------
 # run each of the enabled methods, ignoring pre and post errors
 #---------------------------------------------------------------------
-  
+
   eval { $object->$prehandler($r) } if $prehandler;
 
   eval { $rc = $object->$handler($r) };

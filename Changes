@@ -1,7 +1,8 @@
 Revision history for Perl extension Apache::Dispatch
 
 0.10  05.07.2001
-  -
+  - pass $rc to error handler to allow for finer grained error handling
+  - print "Using/Exiting A::D" only if $debub>=1
   * new maintainer: Thomas Klausner, domm@zsi.at
   - fixed DispatchISA bug that kept adding the same classes to @ISA
     (Barrie Slaymaker)
