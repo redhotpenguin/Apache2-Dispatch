@@ -1,0 +1,51 @@
+<Perl>
+  # stuff to get Apache::Test to recognize shared object files
+  local $^W = 0;
+  use blib;
+</Perl>
+
+PerlModule Apache::Dispatch
+DispatchDebug 2
+
+<Location /plain>
+  SetHandler perl-script
+  PerlHandler Apache::Dispatch
+  DispatchPrefix Foo
+  DispatchRequire On
+</Location>
+
+<Location /filtered>
+  SetHandler perl-script
+  PerlHandler Apache::Dispatch Foo::Filter
+  DispatchPrefix Foo
+  DispatchFilter On
+  DispatchRequire On
+  DispatchExtras Pre Post
+</Location>
+
+<Location /extras>
+  SetHandler perl-script
+  PerlHandler Apache::Dispatch
+  DispatchPrefix Foo
+  DispatchRequire On
+  DispatchExtras Pre Error
+</Location>
+
+<Location /oo>
+  SetHandler perl-script
+  PerlHandler Apache::Dispatch
+  DispatchPrefix Foo
+  DispatchRequire On
+  DispatchAUTOLOAD On
+  DispatchISA Foo::Parent
+</Location>
+
+<Location /newloc>
+  SetHandler perl-script
+  PerlHandler Apache::Dispatch
+  DispatchPrefix Foo
+  DispatchLocation /BLARG
+  DispatchRequire On
+</Location>
+
+
