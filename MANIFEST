@@ -3,7 +3,8 @@ MANIFEST
 Makefile.PL
 Dispatch.pm
 README
-test.pl
 ToDo
+eg/Foo.pm
+eg/Bar.pm
 eg/Foo/Foo.pm
 eg/Foo/Bar.pm

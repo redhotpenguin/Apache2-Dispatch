@@ -1,46 +1,32 @@
 Revision history for Perl extension Apache::Dispatch
 
-0.01  7.28.2000
-  - original version
-  - many kudos and thanks to:
-      Vivek Khera
-      Matt Sergeant
-    for the initial ideas and impetus
+0.10  05.07.2001
+  -
+  * new maintainer: Thomas Klausner, domm@zsi.at
+  - fixed DispatchISA bug that kept adding the same classes to @ISA
+    (Barrie Slaymaker)
+  - fixed bug for <Location /> (thanks again to Barrie for the spot)
+  - suggested use of NEXT.pm pseudoclass in AUTOLOAD documentation
+  - added test suite based on Apache::Test (from 2.0)
+  - made invoked method available from pre/post/error handlers
+    (suggested by Tatsuhiko Miyagawa)
 
-0.02  8.1.2000
-  - thanks again to Matt Sergeant for input not limited to
-    the following valuable suggestions
-      o add DispatchBase for dispatching on a protected,
-        per-location basis
-      o add DispatchMethod Prefix for protecting methods
-        behind a dispatch_ prepend
-  - changed behavior of directory and server merges
-  - updated the documentation
+0.09  01.31.2001
+  - added DispatchLocation - now .htaccess configs should work (really)
+    thanks yet again to Matt Sergeant
+  - documented DispatchLocation
+  - added DispatchRequire (suggested by Vivek Khera, and many others
+    I can't remember specifically)
+  - documented DispatchRequire
+  - fixed DispatchExtras Post documentation (Vivek Khera)
+  - Apache::Dispatch was added to Joshua Chamas' benchmarking
+    stuff - see ToDo for some results
 
-0.03  8.4.2000
-  - complete API and internal rewrite
-      o added DispatchExtras and DispatchPrefix directive
-      o removed per-server configurations
-      o added new pre_dispatch, post_dispatch, error_dispatch
-        and dispatch_index method tie-ins
-  - updated documentation
-  - more kudos to Matt Sergeant for invaluable insight
-
-0.04  8.8.2000
-  - fixed bug to allow null DispatchExtras directive
-  - cleaned up Makefile.PL
-  - borrowed from Apache::StatINC and added DispatchStat 
-    directive (suggested by Matt Sergeant and Dan Campbell)
-
-0.05  8.11.2000
-  - made several changes to _stat - should be more stable now
-  - added AUTOLOAD support
-
-0.06  8.29.2000
-  - changed call to error_dispatch to pass $r and $@
-  - documented the arguments passed to the extras
-  - log the error if the handler dies and there is no 
-    error_dispatch() routine defined
+0.08  12.04.2000
+  - minor documentation additions and fixups
+  - changed all directives so that they can be used from within
+    .htaccess files (suggested by Matt Sergeant)
+  - removed extraneous SERVER_CREATE and SERVER_MERGE sections
 
 0.07  10.26.2000
   - added support for output filtering
@@ -62,28 +48,45 @@ Revision history for Perl extension Apache::Dispatch
   - made mod_perl 1.2401 required due to DIR_MERGE memory leak in 
     mod_perl < 1.24
 
-0.08  12.04.2000
-  - minor documentation additions and fixups
-  - changed all directives so that they can be used from within
-    .htaccess files (suggested by Matt Sergeant)
-  - removed extraneous SERVER_CREATE and SERVER_MERGE sections
+0.06  8.29.2000
+  - changed call to error_dispatch to pass $r and $@
+  - documented the arguments passed to the extras
+  - log the error if the handler dies and there is no 
+    error_dispatch() routine defined
 
-0.09  01.31.2001
-  - added DispatchLocation - now .htaccess configs should work (really)
-    thanks yet again to Matt Sergeant
-  - documented DispatchLocation
-  - added DispatchRequire (suggested by Vivek Khera, and many others
-    I can't remember specifically)
-  - documented DispatchRequire
-  - fixed DispatchExtras Post documentation (Vivek Khera)
-  - Apache::Dispatch was added to Joshua Chamas' benchmarking
-    stuff - see ToDo for some results
+0.05  8.11.2000
+  - made several changes to _stat - should be more stable now
+  - added AUTOLOAD support
 
-0.10  05.07.2001
-  - fixed DispatchISA bug that kept adding the same classes to @ISA
-    (Barrie Slaymaker)
-  - fixed bug for <Location /> (thanks again to Barrie for the spot)
-  - suggested use of NEXT.pm pseudoclass in AUTOLOAD documentation
-  - added test suite based on Apache::Test (from 2.0)
-  - made invoked method available from pre/post/error handlers
-    (suggested by Tatsuhiko Miyagawa)
+0.04  8.8.2000
+  - fixed bug to allow null DispatchExtras directive
+  - cleaned up Makefile.PL
+  - borrowed from Apache::StatINC and added DispatchStat 
+    directive (suggested by Matt Sergeant and Dan Campbell)
+
+0.03  8.4.2000
+  - complete API and internal rewrite
+      o added DispatchExtras and DispatchPrefix directive
+      o removed per-server configurations
+      o added new pre_dispatch, post_dispatch, error_dispatch
+        and dispatch_index method tie-ins
+  - updated documentation
+  - more kudos to Matt Sergeant for invaluable insight
+
+0.02  8.1.2000
+  - thanks again to Matt Sergeant for input not limited to
+    the following valuable suggestions
+      o add DispatchBase for dispatching on a protected,
+        per-location basis
+      o add DispatchMethod Prefix for protecting methods
+        behind a dispatch_ prepend
+  - changed behavior of directory and server merges
+  - updated the documentation
+
+0.01  7.28.2000
+  - original version
+  - many kudos and thanks to:
+      Vivek Khera
+      Matt Sergeant
+    for the initial ideas and impetus
+

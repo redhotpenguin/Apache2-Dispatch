@@ -81,12 +81,14 @@ my @directives = (
     req_override => 'OR_ALL', },
 
   #------------------------------------------------------------------
-  # DispatchCache caches the URI->method translation (somewhat)
+  # DispatchUppercase converts the first char of a class to uppercase
   #------------------------------------------------------------------
-  { name         => 'DispatchCache',
+  { name         => 'DispatchUpperCase',
     errmsg       => 'choose one of On or Off',
     args_how     => 'FLAG',
     req_override => 'OR_ALL', },
+
+
 );
 
 command_table(\@directives);

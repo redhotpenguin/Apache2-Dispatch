@@ -4,15 +4,13 @@ package Apache::Dispatch;
 #---------------------------------------------------------------------
 #
 # usage: PerlHandler Apache::Dispatch
-#        
+#
 #---------------------------------------------------------------------
 
 use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);
 use Apache::Log;
 use Apache::ModuleConfig;
-use Cache::Cache;
-use Cache::SharedMemoryCache;
 use DynaLoader;
 use strict;
 
@@ -20,9 +18,6 @@ $Apache::Dispatch::VERSION = '0.10';
 
 # create global hash to hold the modification times of the modules
 my %stat           = ();
-
-# and to hold name translations
-my %cache          = ();
 
 @Apache::Dispatch::ISA = qw(DynaLoader);
 Apache::Dispatch->bootstrap($Apache::Dispatch::VERSION);
@@ -32,17 +27,7 @@ Apache::Dispatch->bootstrap($Apache::Dispatch::VERSION);
 #  1 - verbose output at info or debug log levels
 #  2 - really verbose output at info or debug log levels
 #  this is rapidly becoming deprecated
-$Apache::Dispatch::DEBUG = 5;
-
-# initialize the cache
-my $cache = Cache::SharedMemoryCache->new;
-
-my %translations = ();
-
-die "Could not initialize cache!"
-  unless Cache::SharedMemoryCache->new->set('URI', \%translations);
-
-Apache->server->register_cleanup(Cache::SharedMemoryCache->Clear);
+$Apache::Dispatch::DEBUG = 0;
 
 sub handler {
 #---------------------------------------------------------------------
@@ -68,7 +53,7 @@ sub handler {
 
   my $prefix       = $dcfg->{_prefix};
 
-  my $cache        = $dcfg->{_cache};
+  my $uppercase    = $dcfg->{_uppercase};
 
   my $new_location = $dcfg->{_newloc};
 
@@ -118,7 +103,7 @@ sub handler {
   if ($debug > 1) {
     $log->info("\tapplying the following dispatch rules:",
       "\n\t\tDispatchPrefix: ", $prefix,
-      "\n\t\tDispatchCache: ", $cache,
+      "\n\t\tDispatchUpperCase: ", $uppercase,
       "\n\t\tDispatchStat: ", $stat,
       "\n\t\tDispatchFilter: ", $filter,
       "\n\t\tDispatchDebug: ", $debug,
@@ -138,13 +123,17 @@ sub handler {
 #---------------------------------------------------------------------
   
   my ($class, $method) = _translate_uri($r, $prefix, $new_location,
-                                        $log, $debug, $cache);
+                                        $log, $debug);
   
   unless ($class && $method) {
     $log->info("\tclass and method could not be discovered")
        if $debug;
     $log->info("Exiting Apache::Dispatch");
     return DECLINED;
+  }
+
+  if ($uppercase) {
+      $class=~s/::([a-z])/::\U$1/g;
   }
 
   my $object       = {};
@@ -289,33 +278,9 @@ sub _translate_uri {
 # this method is for internal use only
 #---------------------------------------------------------------------
 
-  my ($r, $prefix, $newloc, $log, $debug, $cache)   = @_;
+  my ($r, $prefix, $newloc, $log, $debug)   = @_;
 
   my $uri = $r->uri;
-
-  my $cacheobj = Cache::SharedMemoryCache->new;
-
-  my $translations;
-
-  if ($cache && $cacheobj) {
-    
-    warn "starting new cache routine...";
-    # check for a cached method first
-    $translations = $cacheobj->get('URI');
-
-    warn "trans: $translations";
-    foreach my $key (sort keys %$translations) {
-      warn "found $key => ", $translations->{$key}, " ", $translations->{$key}->{class};
-    }
-
-    if ($translations->{$uri}) {
-      $log->info("\treturning cached URI translation for ", 
-                 $r->location)
-         if $debug > 1;
-      return ($translations->{$uri}->{class},
-              $translations->{$uri}->{method});
-    }
-  }
 
   my $location;
 
@@ -368,22 +333,6 @@ sub _translate_uri {
     $method = "dispatch_$method";
   }
 
-  if ($cache && $cacheobj) {
-    warn "no match found - caching $uri";
-    # cache the results of the translation
-
-    $translations->{$uri}{class} = $class;
-    $translations->{$uri}{method} = $method;
-    my $rc = $cacheobj->set('URI', $translations);
-    warn "rc is: $rc";
-    $translations = $cacheobj->get('URI');
-
-    warn "after setting... trans: $translations";
-    foreach my $key (sort keys %$translations) {
-      warn "found $key => ", $translations->{$key}, " ", $translations->{$key}->{class};
-    }
-  }
-  
   return ($class, $method);
 }
 
@@ -537,7 +486,7 @@ sub DIR_CREATE {
   $self->{_autoload}  = 0;   # no autloading by default
   $self->{_require}   = 0;   # no require()ing by default
 
-  warn "inside DIR_CREATE";
+#  warn "inside DIR_CREATE";
   return $self;
 }
 
@@ -545,7 +494,7 @@ sub DIR_MERGE {
   my ($parent, $current) = @_;
   my %new          = (%$parent, %$current);
 
-  warn "inside DIR_MERGE";
+#  warn "inside DIR_MERGE";
   return bless \%new, ref($parent);
 }
 
@@ -620,10 +569,10 @@ sub DispatchDebug ($$$) {
   }
 }
 
-sub DispatchCache ($$$) {
+sub DispatchUpperCase ($$$) {
   my ($cfg, $parms, $arg) = @_;
-  
-  $cfg->{_cache} = $arg;
+
+  $cfg->{_uppercase} = $arg;
 }
 
 1;
