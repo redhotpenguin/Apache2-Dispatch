@@ -246,8 +246,8 @@ sub handler {
 
   if ($errorhandler && ($@ || $rc != OK)) {
     # if the error handler dies we want to catch it, so don't eval
-    $rc = $object->$errorhandler($r, $@);
-  } 
+    $rc = $object->$errorhandler($r, $@, $rc);
+  }
   elsif ($@) {
     $log->error("$class->$method died: $@");
     $rc = SERVER_ERROR;
