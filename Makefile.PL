@@ -1,13 +1,35 @@
 package Apache::Dispatch;
 
 use ExtUtils::MakeMaker;
-use Apache::ExtUtils qw(command_table);
-use Apache::src ();
-use strict;
 
 require 5.005;
 
-my @directives = (
+eval {
+  require Apache::ExtUtils;
+  require Apache::src;
+};
+
+my %makefile_params=(    
+    'NAME'         => __PACKAGE__,
+    'VERSION_FROM' => 'Dispatch.pm',
+    );
+
+    
+
+if ($@ || $ENV{DISPATCH_PUREPERL}) {
+    print "\nBuilding without Custom Apache Directives, use 'PerlSetVar' for configuration.\n\n";
+
+    $makefile_params{'PL_FILES'}={'set_pureperl.PL'=>'1'}; 
+    $makefile_params{'C'}=[]; 
+    
+} else {
+    print "\nBuilding with Custom Apache Directives ('DispatchPrefix'). You 
+will need a C compiler and Apache/mod_perl sources.\n\n";
+    
+    import Apache::ExtUtils qw(command_table);
+
+   
+    my @directives = (
   #------------------------------------------------------------------
   # DispatchPrefix defines the base class for a given <Location>
   #------------------------------------------------------------------
@@ -89,31 +111,29 @@ my @directives = (
     req_override => 'OR_ALL', },
 
 
-);
+    );
 
-command_table(\@directives);
+    command_table(\@directives);
 
-sub MY::test {
-  if (eval "require Apache::TestMM") {
-    Apache::TestMM::generate_script('t/TEST');
-    Apache::TestMM->import(qw(test clean));
-    return Apache::TestMM->test;
-  }
-
-  # The whitespace in front of @echo MUST be a single tab!
-  return <<'EOF';
-test::
-	@echo This test suite requires Apache::Test
-	@echo available from the mod_perl 2.0 sources
-	@echo or the httpd-test distribution.
-EOF
+    $makefile_params{'PL_FILES'}={'set_pureperl.PL'=>'0'}; 
+   
+    $makefile_params{'INC'}=Apache::src->new->inc;
+    $makefile_params{'PREREQ_PM'}={ mod_perl => 1.2401, };
+    $makefile_params{'clean'}={ FILES => '*.xs*' };
 }
 
-WriteMakefile(
-  'NAME'         => __PACKAGE__,
-  'VERSION_FROM' => 'Dispatch.pm',
-  'INC'          => Apache::src->new->inc,
-  'PREREQ_PM'    => { mod_perl => 1.2401, },
-  'clean'        => { FILES => '*.xs*' },
-);
+WriteMakefile(%makefile_params);
+
+__END__
+
+open (FH,catfile(qw(blib lib Apache Dispatch.pm))) || die "cannot read Dispatch.pm: $!";
+my $code=join('',<FH>);
+close FH;
+
+$code=~s/%%PUREPERL%%/$pureperl/;
+
+open (OUT,">".catfile(qw(blib lib Apache Dispatch.pm))) || die "cannot write to Dispatch.pm: $!";
+print OUT $code;
+close OUT;
+
 

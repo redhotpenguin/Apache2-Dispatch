@@ -10,17 +10,21 @@ package Apache::Dispatch;
 use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);
 use Apache::Log;
-use Apache::ModuleConfig;
-use DynaLoader;
 use strict;
 
 $Apache::Dispatch::VERSION = '0.10';
+$Apache::Dispatch::PUREPERL = 'PUREPERL';   # set during perl Makefile.PL
+
 
 # create global hash to hold the modification times of the modules
 my %stat           = ();
 
-@Apache::Dispatch::ISA = qw(DynaLoader);
-Apache::Dispatch->bootstrap($Apache::Dispatch::VERSION);
+if ($Apache::Dispatch::PUREPERL == 0 ) {
+    require Apache::ModuleConfig;
+    require DynaLoader;
+    @Apache::Dispatch::ISA = qw(DynaLoader);
+    Apache::Dispatch->bootstrap($Apache::Dispatch::VERSION);
+}
 
 # set debug level
 #  0 - messages at info or debug log levels
@@ -36,9 +40,13 @@ sub handler {
   
   my $r            = shift;
   
-  my $dcfg         = Apache::ModuleConfig->get($r,
-                                               __PACKAGE__);
-
+  my $dcfg;
+  if ($Apache::Dispatch::PUREPERL == 0) {
+    $dcfg=Apache::ModuleConfig->get($r,__PACKAGE__);
+  } else {
+    $dcfg=get_pureperl_config($r);
+  }
+  
   my $filter       = $dcfg->{_filter}         ||
                      $r->dir_config('Filter') ||
                      0;
@@ -467,6 +475,21 @@ sub _set_ISA {
                        (@{"${class}::ISA"}, @parents);
 
   return 1; 
+}
+#---------------------------------------------------------------------
+# Pure Perl configuration methods
+#---------------------------------------------------------------------
+
+sub get_pureperl_config {
+    my $r=shift;
+    my $cfg={};
+    no strict 'refs';
+    foreach my $key (qw(DispatchPrefix DispatchExtras DispatchStat DispatchAUTOLOAD DispatchDebug DispatchISA DispatchLocation DispatchRequire DispatchFilter DispatchUpperCase)) {
+        my $arg=$r->dir_config($key);
+        next unless $arg;
+        &$key($cfg,undef,$arg);
+    }
+    return $cfg;
 }
 
 #---------------------------------------------------------------------
