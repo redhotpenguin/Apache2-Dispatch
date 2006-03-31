@@ -1,51 +1,91 @@
 <Perl>
-  # stuff to get Apache::Test to recognize shared object files
-  local $^W = 0;
-  use blib;
+	# stuff to get Apache::Test to recognize shared object files
+	local $^W = 0;
+	use blib;
 </Perl>
 
-PerlModule Apache::Dispatch
+<IfDefine APACHE2>
+	PerlModule Apache2::Dispatch
+</IfDefine>
+<IfDefine APACHE1>
+	PerlModule Apache::Dispatch
+</IfDefine>
+
 DispatchDebug 2
 
 <Location /plain>
-  SetHandler perl-script
-  PerlHandler Apache::Dispatch
-  DispatchPrefix Foo
-  DispatchRequire On
+	SetHandler perl-script
+  
+	<IfDefine APACHE2>
+		PerlResponseHandler Apache2::Dispatch
+	</IfDefine>
+	<IfDefine APACHE1>
+		PerlHandler Apache::Dispatch
+	</IfDefine>
+	
+	DispatchPrefix Foo
+	DispatchRequire On
 </Location>
 
 <Location /filtered>
-  SetHandler perl-script
-  PerlHandler Apache::Dispatch Foo::Filter
-  DispatchPrefix Foo
-  DispatchFilter On
-  DispatchRequire On
-  DispatchExtras Pre Post
+	SetHandler perl-script
+	
+	<IfDefine APACHE2>
+		PerlResponseHandler Apache2::Dispatch Foo::Filter
+	</IfDefine>
+	<IfDefine APACHE1>
+		PerlHandler Apache::Dispatch Foo::Filter
+	</IfDefine>
+	
+	DispatchPrefix Foo
+	DispatchFilter On
+	DispatchRequire On
+	DispatchExtras Pre Post
 </Location>
 
 <Location /extras>
-  SetHandler perl-script
-  PerlHandler Apache::Dispatch
-  DispatchPrefix Foo
-  DispatchRequire On
-  DispatchExtras Pre Error
+	SetHandler perl-script
+	
+	<IfDefine APACHE2>
+		PerlResponseHandler Apache::Dispatch
+	</IfDefine>
+	<IfDefine APACHE>
+		PerlHandler Apache::Dispatch
+	</IfDefine>
+	
+	DispatchPrefix Foo
+	DispatchRequire On
+	DispatchExtras Pre Error
 </Location>
 
 <Location /oo>
-  SetHandler perl-script
-  PerlHandler Apache::Dispatch
-  DispatchPrefix Foo
-  DispatchRequire On
-  DispatchAUTOLOAD On
-  DispatchISA Foo::Parent
+	SetHandler perl-script
+
+	<IfDefine APACHE2>
+		PerlResponseHandler Apache::Dispatch
+	</IfDefine>
+	<IfDefine APACHE>
+		PerlHandler Apache::Dispatch
+	</IfDefine>
+
+	DispatchPrefix Foo
+	DispatchRequire On
+	DispatchAUTOLOAD On
+	DispatchISA Foo::Parent
 </Location>
 
 <Location /newloc>
-  SetHandler perl-script
-  PerlHandler Apache::Dispatch
-  DispatchPrefix Foo
-  DispatchLocation /BLARG
-  DispatchRequire On
+	SetHandler perl-script
+	
+	<IfDefine APACHE2>
+		PerlResponseHandler Apache::Dispatch
+	</IfDefine>
+	<IfDefine APACHE>
+		PerlHandler Apache::Dispatch
+	</IfDefine>
+	
+	DispatchPrefix Foo
+	DispatchLocation /BLARG
+	DispatchRequire On
 </Location>
-
 
