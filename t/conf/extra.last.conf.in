@@ -55,7 +55,7 @@ DispatchDebug 2
 	<IfDefine APACHE2>
 		PerlResponseHandler Apache::Dispatch
 	</IfDefine>
-	<IfDefine APACHE>
+	<IfDefine APACHE1>
 		PerlHandler Apache::Dispatch
 	</IfDefine>
 	
@@ -70,7 +70,7 @@ DispatchDebug 2
 	<IfDefine APACHE2>
 		PerlResponseHandler Apache2::Dispatch
 	</IfDefine>
-	<IfDefine APACHE>
+	<IfDefine APACHE1>
 		PerlHandler Apache::Dispatch
 	</IfDefine>
 
@@ -86,7 +86,7 @@ DispatchDebug 2
 	<IfDefine APACHE2>
 		PerlResponseHandler Apache::Dispatch
 	</IfDefine>
-	<IfDefine APACHE>
+	<IfDefine APACHE1>
 		PerlHandler Apache::Dispatch
 	</IfDefine>
 	
