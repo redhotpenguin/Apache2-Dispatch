@@ -6,9 +6,15 @@
 
 <IfDefine APACHE2>
 	PerlModule Apache2::Dispatch
+	<Perl>
+		use lib 't/lib/mp2';
+	</Perl>
 </IfDefine>
 <IfDefine APACHE1>
 	PerlModule Apache::Dispatch
+	<Perl>
+		use lib 't/lib/mp1';
+	</Perl>
 </IfDefine>
 
 DispatchDebug 2
@@ -62,7 +68,7 @@ DispatchDebug 2
 	SetHandler perl-script
 
 	<IfDefine APACHE2>
-		PerlResponseHandler Apache::Dispatch
+		PerlResponseHandler Apache2::Dispatch
 	</IfDefine>
 	<IfDefine APACHE>
 		PerlHandler Apache::Dispatch
