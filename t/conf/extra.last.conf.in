@@ -47,7 +47,7 @@ DispatchDebug 2
 	SetHandler perl-script
 	
 	<IfDefine APACHE2>
-		PerlResponseHandler Apache::Dispatch
+		PerlResponseHandler Apache2::Dispatch
 	</IfDefine>
 	<IfDefine APACHE1>
 		PerlHandler Apache::Dispatch
@@ -78,7 +78,7 @@ DispatchDebug 2
 	SetHandler perl-script
 	
 	<IfDefine APACHE2>
-		PerlResponseHandler Apache::Dispatch
+		PerlResponseHandler Apache2::Dispatch
 	</IfDefine>
 	<IfDefine APACHE1>
 		PerlHandler Apache::Dispatch
