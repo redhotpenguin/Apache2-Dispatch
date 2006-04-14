@@ -1,9 +1,3 @@
-<Perl>
-	# stuff to get Apache::Test to recognize shared object files
-	local $^W = 0;
-	use blib;
-</Perl>
-
 <IfDefine APACHE2>
 	PerlModule Apache2::Dispatch
 	<Perl>
