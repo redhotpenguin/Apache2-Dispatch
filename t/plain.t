@@ -6,6 +6,6 @@ use Apache::TestRequest;
 
 plan tests => 1, \&have_lwp;
 
-my $url = '/plain/Bar/good';
+my $url = '/plain/Bar/baz';
 
 ok GET_OK $url;
