@@ -44,7 +44,7 @@
 	
 	<IfDefine APACHE2>
 		DispatchPrefix Apache2::Foo
-		PerlResponseHandler Apache::Dispatch
+		PerlResponseHandler Apache2::Dispatch
 	</IfDefine>
 	<IfDefine APACHE1>
 		DispatchPrefix Apache::Foo
