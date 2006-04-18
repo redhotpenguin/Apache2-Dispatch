@@ -17,6 +17,7 @@ my %makefile_params = (
                        'PREREQ_PM' => \%prereq,
                       );
 
+					  
 # enable "make test"
 require Apache::TestMM;
 Apache::TestMM->import(qw(test clean));
@@ -30,7 +31,7 @@ Apache::TestMM::generate_script(@scripts);
 $makefile_params{clean} = {FILES => "@scripts"};
 
 if ($mp_wanted == 2) {    # mod_perl2 specific makefile
-    $prereq{'mod_perl'} = 1.99023;    # this covers the naming change
+    $prereq{'mod_perl2'} = 1.99023;    # this covers the naming change
     $makefile_params{'NAME'} = 'Apache2::Dispatch';
 
     require ModPerl::MM;
