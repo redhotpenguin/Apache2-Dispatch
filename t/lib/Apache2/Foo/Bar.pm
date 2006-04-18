@@ -31,12 +31,12 @@ __END__
 
 here is a sample httpd.conf entry
 
-  PerlModule Apache::Dispatch
-  PerlModule MP2Foo
+  PerlLoadModule Apache2::Dispatch
+  PerlModule Apache2::Foo::Bar
 
   <Location /Test>
     SetHandler perl-script
-    PerlHandler Apache::Dispatch
+    PerlHandler Apache2::Dispatch
     DispatchPrefix Foo
     DispatchExtras Pre Post Error
   </Location>

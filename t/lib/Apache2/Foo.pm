@@ -1,45 +1,50 @@
 package Apache2::Foo;
 
 use Apache2::Const -compile => qw( OK SERVER_ERROR );
+use Apache2::RequestIO;
 use strict;
 
 sub dispatch_foo {
-    my $class = shift;
-    my $r = shift;
-    $r->send_http_header('text/plain');
+    my ($class, $r) = @_;
+    
+	$r->content_type('text/plain');
     $r->print("Foo->dispatch_foo()");
-    print STDERR "Foo->dispatch_foo()\n";
+    $r->log->debug("Foo->dispatch_foo()");
     return Apache2::Const::OK;
 }
 
 sub dispatch_bar {
-    print STDERR "Foo->dispatch_bar()\n";
+    my ($class, $r) = @_;
+	require Data::Dumper;
+	$r->log->debug("ARGV is " . Data::Dumper::Dumper(\@_));
+    $r->log->debug( "Foo->dispatch_bar()");
     return Apache2::Const::SERVER_ERROR;
 }
 
 sub pre_dispatch {
-    print STDERR "Foo->pre_dispatch()\n";
+    my ($class, $r) = @_;
+    $r->log->debug("Foo->pre_dispatch()");
 }
 
 sub post_dispatch {
-    print STDERR "Foo->post_dispatch()\n";
+    my ($class, $r) = @_;
+    $r->log->debug("Foo->post_dispatch()");
 }
 
 sub error_dispatch {
-    my $class = shift;
-    my $r = shift;
-    $r->send_http_header('text/plain');
+    my ($class, $r) = @_;
+    
+	$r->send_http_header('text/plain');
     $r->print("Yikes!  Foo->dispatch_error()");
-    print STDERR "Yikes!  Foo->dispatch_error()\n";
     return Apache2::Const::OK;
 }
 
 sub dispatch_index {
-    my $class = shift;
-    my $r = shift;
-    $r->send_http_header('text/plain');
+    my ($class, $r) = @_;
+    
+	$r->content_type('text/plain');
     $r->print("Foo->dispatch_index()");
-    print STDERR "Foo->dispatch_index()\n";
+    $r->log->debug( "Foo->dispatch_index()");
     return Apache2::Const::OK;
 }
 
@@ -50,12 +55,12 @@ __END__
 here is a sample httpd.conf entry
 
   PerlModule Apache2::Dispatch
-  PerlModule Foo
+  PerlModule Apache2::Foo
 
   <Location /Test>
     SetHandler perl-script
     PerlHandler Apache2::Dispatch
-    DispatchPrefix Foo
+    DispatchPrefix Apache2::Foo
     DispatchExtras Pre Post Error
   </Location>
 
