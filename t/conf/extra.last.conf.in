@@ -1,91 +1,88 @@
 <IfDefine APACHE2>
-	PerlModule Apache2::Dispatch
-	<Perl>
-		use lib 't/lib/mp2';
-	</Perl>
+	PerlLoadModule Apache2::Dispatch
 </IfDefine>
 <IfDefine APACHE1>
-	PerlModule Apache::Dispatch
-	<Perl>
-		use lib 't/lib/mp1';
-	</Perl>
+	PerlLoadModule Apache::Dispatch
 </IfDefine>
-
-DispatchDebug 2
 
 <Location /plain>
 	SetHandler perl-script
+	DispatchRequire On
   
 	<IfDefine APACHE2>
+		DispatchPrefix Apache2::Foo
 		PerlResponseHandler Apache2::Dispatch
 	</IfDefine>
 	<IfDefine APACHE1>
 		PerlHandler Apache::Dispatch
+		DispatchPrefix Apache::Foo
 	</IfDefine>
 	
-	DispatchPrefix Foo
-	DispatchRequire On
 </Location>
 
 <Location /filtered>
 	SetHandler perl-script
-	
-	<IfDefine APACHE2>
-		PerlResponseHandler Apache2::Dispatch Foo::Filter
-	</IfDefine>
-	<IfDefine APACHE1>
-		PerlHandler Apache::Dispatch Foo::Filter
-	</IfDefine>
-	
-	DispatchPrefix Foo
 	DispatchFilter On
 	DispatchRequire On
 	DispatchExtras Pre Post
+	
+	<IfDefine APACHE2>
+		DispatchPrefix Apache2::Foo
+		PerlResponseHandler Apache2::Dispatch Apache2::Foo::Filter
+	</IfDefine>
+	<IfDefine APACHE1>
+		DispatchPrefix Apache::Foo
+		PerlHandler Apache::Dispatch Apache::Foo::Filter
+	</IfDefine>
+	
 </Location>
 
 <Location /extras>
 	SetHandler perl-script
+	DispatchRequire On
+	DispatchExtras Pre Error
 	
 	<IfDefine APACHE2>
-		PerlResponseHandler Apache2::Dispatch
+		DispatchPrefix Apache2::Foo
+		PerlResponseHandler Apache::Dispatch
 	</IfDefine>
 	<IfDefine APACHE1>
+		DispatchPrefix Apache::Foo
 		PerlHandler Apache::Dispatch
 	</IfDefine>
 	
-	DispatchPrefix Foo
-	DispatchRequire On
-	DispatchExtras Pre Error
 </Location>
 
 <Location /oo>
 	SetHandler perl-script
-
-	<IfDefine APACHE2>
-		PerlResponseHandler Apache2::Dispatch
-	</IfDefine>
-	<IfDefine APACHE1>
-		PerlHandler Apache::Dispatch
-	</IfDefine>
-
-	DispatchPrefix Foo
 	DispatchRequire On
 	DispatchAUTOLOAD On
 	DispatchISA Foo::Parent
+
+	<IfDefine APACHE2>
+		DispatchPrefix Apache2::Foo
+		PerlResponseHandler Apache2::Dispatch
+	</IfDefine>
+	<IfDefine APACHE1>
+		DispatchPrefix Apache::Foo
+		PerlHandler Apache::Dispatch
+	</IfDefine>
+	
 </Location>
 
 <Location /newloc>
 	SetHandler perl-script
+	DispatchLocation /BLARG
+	DispatchRequire On
 	
 	<IfDefine APACHE2>
-		PerlResponseHandler Apache2::Dispatch
+		DispatchPrefix Apache2::Foo
+		PerlResponseHandler Apache::Dispatch
 	</IfDefine>
 	<IfDefine APACHE1>
+		DispatchPrefix Foo
 		PerlHandler Apache::Dispatch
 	</IfDefine>
 	
-	DispatchPrefix Foo
-	DispatchLocation /BLARG
-	DispatchRequire On
 </Location>
 
