@@ -17,7 +17,6 @@ my %makefile_params = (
                        'PREREQ_PM' => \%prereq,
                       );
 
-					  
 # enable "make test"
 require Apache::TestMM;
 Apache::TestMM->import(qw(test clean));
@@ -38,12 +37,15 @@ if ($mp_wanted == 2) {    # mod_perl2 specific makefile
     ModPerl::MM::WriteMakefile(%makefile_params);
 }
 
-elsif ($mp_wanted != 2) {             # mod_perl1 specific makefile
+elsif ($mp_wanted != 2) {              # mod_perl1 specific makefile
 
     eval {
         require Apache::ExtUtils;
         require Apache::src;
     };
+
+    # Build directives using xs or PerlSetVar
+    my $pureperl;
 
     if ($@ || $ENV{DISPATCH_PUREPERL}) {
         print
@@ -61,24 +63,22 @@ will need a C compiler and Apache/mod_perl sources.\n\n";
 
         require Apache::Dispatch;
         my $directives = Apache::Dispatch->directives;
-        Apache::Extutils::command_table($directives);
+        command_table($directives);
 
-        my $inc = Apache::src->new->inc;
-        die "Can't find mod_perl header files installed" unless $inc;
-
-        $makefile_params{'INC'}       = $inc;
         $makefile_params{'PL_FILES'}  = {'set_pureperl.PL' => '0'};
-        $makefile_params{'PREREQ_PM'} = {mod_perl => 1.2401,};
-        $makefile_params{'clean'}     = {FILES => '*.xs*'};
-        $makefile_params{'NAME'}      = 'Apache2::Dispatch';
-
-        require ExtUtils::MakeMaker;
-        ExtUtils::MakeMaker::WriteMakefile(
-                                           INC  => $inc,
-                                           LIBS => [''],
-                                           %makefile_params,
-                                          );
+        $makefile_params{'PREREQ_PM'} = {mod_perl          => 1.2401,};
+        $makefile_params{'clean'}     = {FILES             => '*.xs*'};
     }
+
+    my $inc = Apache::src->new->inc;
+    die "Can't find mod_perl header files installed" unless $inc;
+    require ExtUtils::MakeMaker;
+    ExtUtils::MakeMaker::WriteMakefile(
+                                       NAME => 'Apache::Dispatch',
+                                       INC  => $inc,
+                                       LIBS => [''],
+                                       %makefile_params,
+                                      );
 }
 
 # The next sub inspired by Apache::Peek 1.05
@@ -140,17 +140,4 @@ EOF
 
     return ($wanted, $mp_ver);
 }
-
-__END__
-
-open (FH,catfile(qw(blib lib Apache Dispatch.pm))) || die "cannot read Dispatch.pm: $!";
-my $code=join('',<FH>);
-close FH;
-
-$code=~s/%%PUREPERL%%/$pureperl/;
-
-open (OUT,">".catfile(qw(blib lib Apache Dispatch.pm))) || die "cannot write to Dispatch.pm: $!";
-print OUT $code;
-close OUT;
-
 
