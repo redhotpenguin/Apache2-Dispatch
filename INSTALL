@@ -1,0 +1,15 @@
+Install and guess which version of mod_perl you use, defaulting to mp2 if both
+exist.
+
+perl Makefile.PL
+make && make test && make install
+
+Install Apache2::Dispatch explicitly for mod_perl2.
+
+perl Makefile.PL MOD_PERL=2
+make && make test && make install
+
+Install Apache::Dispatch explicitly for mod_perl1.
+
+perl Makefile.PL MOD_PERL=1
+make && make test && make install
