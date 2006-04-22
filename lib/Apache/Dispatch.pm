@@ -11,6 +11,8 @@ package Apache::Dispatch;
 use strict;
 use warnings;
 
+my $VERSION = '0.10';
+
 my @directives = (
 
     #------------------------------------------------------------------
@@ -118,7 +120,7 @@ use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);
 use Apache::Log;
 
-$Apache::Dispatch::PUREPERL = 'PUREPERL';    # set during perl Makefile.PL
+$Apache::Dispatch::PUREPERL=0;    # set during perl Makefile.PL
 
 # create global hash to hold the modification times of the modules
 my %stat = ();
@@ -127,7 +129,7 @@ if ($Apache::Dispatch::PUREPERL == 0) {
     require Apache::ModuleConfig;
     require DynaLoader;
     @Apache::Dispatch::ISA = qw(DynaLoader);
-    Apache::Dispatch->bootstrap($Apache::Dispatch::VERSION);
+    __PACKAGE__->bootstrap($VERSION);
 }
 
 sub directives {
