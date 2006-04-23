@@ -2,9 +2,11 @@
 	PerlLoadModule Apache2::Dispatch
 </IfDefine>
 <IfDefine APACHE1>
-	PerlLoadModule Apache::Dispatch
+	PerlModule Apache::Dispatch
 </IfDefine>
-
+<Perl>
+	print STDERR "GOOOOZAAAAAAAQ!!!";
+</Perl>
 <Location /plain>
 	SetHandler perl-script
 	DispatchRequire On
