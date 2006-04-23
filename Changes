@@ -1,8 +1,17 @@
 Revision history for Perl extension Apache::Dispatch
 
 0.10  05.07.2001
+  - move common methods to Apache::Dispatch::Util and adjust @ISA for
+	Apache*::Dispatch modules to use common methods via inheritance - fred
+  - deprecated $Apache::Dispatch::DEBUG directive per dev notes in favor
+	of DispatchDebug, which accepts the same arguments, see pod - fred
+  - mod_perl2 compatibility via Apache2::Dispatch - fred
+  - source code now under subversion at 
+	http://svn.sourceforge.net/viewcvs.cgi/apache-dispatch/ - geoff, domm
+  - project moved to http://sourceforge.net/projects/apache-dispatch - geoff
+  * new maintainer: Fred Moyer <fred@redhotpenguin.com>
   - pass $rc to error handler to allow for finer grained error handling
-  - print "Using/Exiting A::D" only if $debub>=1
+  - print "Using/Exiting A::D" only if $debug>=1
   * new maintainer: Thomas Klausner, domm@zsi.at
   - fixed DispatchISA bug that kept adding the same classes to @ISA
     (Barrie Slaymaker)
