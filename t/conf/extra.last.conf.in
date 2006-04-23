@@ -4,9 +4,7 @@
 <IfDefine APACHE1>
 	PerlModule Apache::Dispatch
 </IfDefine>
-<Perl>
-	print STDERR "GOOOOZAAAAAAAQ!!!";
-</Perl>
+
 <Location /plain>
 	SetHandler perl-script
 	DispatchRequire On
