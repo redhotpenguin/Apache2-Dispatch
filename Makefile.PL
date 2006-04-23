@@ -59,15 +59,8 @@ elsif ($mp_wanted != 2) {              # mod_perl1 specific makefile
         print "\nBuilding with Custom Apache Directives ('DispatchPrefix'). You 
 will need a C compiler and Apache/mod_perl sources.\n\n";
 
-        import Apache::ExtUtils qw(command_table);
-
-        require Apache::Dispatch;
-        my $directives = Apache::Dispatch->directives;
-        command_table($directives);
-
         $makefile_params{'PL_FILES'}  = {'set_pureperl.PL' => '0'};
         $makefile_params{'PREREQ_PM'} = {mod_perl          => 1.2401,};
-        $makefile_params{'clean'}     = {FILES             => '*.xs*'};
     }
 
     my $inc = Apache::src->new->inc;
