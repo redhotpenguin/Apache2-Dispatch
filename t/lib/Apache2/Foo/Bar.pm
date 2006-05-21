@@ -6,7 +6,17 @@ use warnings;
 use Apache2::Const -compile => qw( OK SERVER_ERROR );
 use Apache2::RequestRec;
 
-@Foo::Bar::ISA = qw(Foo::Foo);
+@Foo::Bar::ISA = qw(Apache::Foo::Foo);
+
+sub dispatch_index {
+  # test calls to /Bar/index or /
+  my $self = shift;
+  my $r = shift;
+  $r->send_http_header('text/plain');
+  $r->print("Foo::Bar->dispatch_index()");
+  print STDERR "Foo::Bar->dispatch_index()\n";
+  return Apache2::Const::OK;
+}
 
 sub dispatch_baz {
     my ($class, $r) = @_;
