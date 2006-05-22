@@ -15,16 +15,38 @@ our $VERSION = '0.10';
 
 use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);
-use Apache::Log ();
-use Apache::Dispatch::Util;
-push @Apache::Dispatch::ISA, qw(Apache::Dispatch::Util);
+use Apache::Log			   ();
+use Apache::Dispatch::Util ();
+
+BEGIN {
+    push @Apache::Dispatch::ISA, qw(Apache::Dispatch::Util);
+
+    {
+
+        #---------------------------------------------------------------------
+        # there is a problem with using command_table methods with inheritance
+        # so here we map the command table directive names to the methods in
+		# Apache::Dispatch::Util using the symbol table.  this allows us to
+		# share the code between Apache::Dispatch and Apache2::Dispatch
+        #---------------------------------------------------------------------
+
+        my @dir_names =
+          map { $_->{name} } @{Apache::Dispatch::Util->directives};
+        no strict 'refs';
+        foreach my $directive (@dir_names) {
+            *{"Apache::Dispatch::$directive"} =
+              \&{"Apache::Dispatch::Util::$directive"};
+        }
+
+    }
+}
 
 $Apache::Dispatch::PUREPERL = 0;    # set during perl Makefile.PL
 
 if ($Apache::Dispatch::PUREPERL == 0) {
-	require Apache::ModuleConfig;
+    require Apache::ModuleConfig;
     require DynaLoader;
-	push @Apache::Dispatch::ISA, qw(DynaLoader);
+    push @Apache::Dispatch::ISA, qw(DynaLoader);
     __PACKAGE__->bootstrap($VERSION);
 }
 
@@ -204,7 +226,8 @@ sub handler {
     # if not, decline the request
     #---------------------------------------------------------------------
 
-    my $handler = __PACKAGE__->_check_dispatch($object, $method, $autoload, $log, $debug);
+    my $handler =
+      __PACKAGE__->_check_dispatch($object, $method, $autoload, $log, $debug);
 
     if ($handler) {
         $log->info("\t$uri was translated into $class->$method")
@@ -223,17 +246,18 @@ sub handler {
     foreach my $extra (@extras) {
         if ($extra eq "PRE") {
             $prehandler =
-              __PACKAGE__->_check_dispatch($object, "pre_dispatch", $autoload, $log, $debug);
+              __PACKAGE__->_check_dispatch($object, "pre_dispatch", $autoload,
+                                           $log, $debug);
         }
         elsif ($extra eq "POST") {
             $posthandler =
-              __PACKAGE__->_check_dispatch($object, "post_dispatch", $autoload, $log,
-                              $debug);
+              __PACKAGE__->_check_dispatch($object, "post_dispatch", $autoload,
+                                           $log, $debug);
         }
         elsif ($extra eq "ERROR") {
             $errorhandler =
-              __PACKAGE__->_check_dispatch($object, "error_dispatch", $autoload, $log,
-                              $debug);
+              __PACKAGE__->_check_dispatch($object, "error_dispatch", $autoload,
+                                           $log, $debug);
         }
     }
 

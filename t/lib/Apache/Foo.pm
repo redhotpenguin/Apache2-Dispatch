@@ -1,4 +1,4 @@
-package Apache::Foo::Foo;
+package Apache::Foo;
 
 use Apache::Constants qw( OK SERVER_ERROR );
 use strict;
@@ -6,24 +6,29 @@ use strict;
 sub dispatch_foo {
     my $class = shift;
     my $r = shift;
-    $r->log->debug(__PACKAGE__ . "->dispatch_foo()\n";
+    $r->log->debug(__PACKAGE__ . "->dispatch_foo()");
     
 	$r->send_http_header('text/plain');
-    $r->print("Foo::Foo->dispatch_foo()");
+    $r->print(__PACKAGE__ . "->dispatch_foo()");
     return OK;
 }
 
-sub dispatch_bar {
-    print STDERR "Foo->dispatch_bar()\n";
+sub dispatch_uhoh {
+    my ($class, $r) = @_;
+
+	$r->log->debug(__PACKAGE__ . "->dispatch_bar()");
     return SERVER_ERROR;
 }
 
 sub pre_dispatch {
-    print STDERR "Foo->pre_dispatch()\n";
+    my ($class, $r) = @_;
+    $r->log->debug(__PACKAGE__ . "->pre_dispatch()");
 }
 
 sub post_dispatch {
-    print STDERR "Foo->post_dispatch()\n";
+    my ($class, $r) = @_;
+    $r->log->debug(__PACKAGE__ . "->post_dispatch()");
+	$r->print($Apache::Foo::output);
 }
 
 sub error_dispatch {
@@ -31,7 +36,7 @@ sub error_dispatch {
     my $r = shift;
     $r->send_http_header('text/plain');
     $r->print("Yikes!  Foo->dispatch_error()");
-    print STDERR "Yikes!  Foo->dispatch_error()\n";
+    $r->log->error("Yikes!  " . __PACKAGE__ . "->dispatch_error()");
     return OK;
 }
 
@@ -39,8 +44,8 @@ sub dispatch_index {
     my $class = shift;
     my $r = shift;
     $r->send_http_header('text/plain');
-    $r->print("Foo::Foo->dispatch_index()");
-    print STDERR "Foo::Foo->dispatch_index()\n";
+    $r->print(__PACKAGE__ . "->dispatch_index()");
+    $r->log->debug(__PACKAGE__ . "->dispatch_index()");
     return OK;
 }
 

@@ -25,8 +25,8 @@ sub dispatch_baz {
 	$r->log->debug(__PACKAGE__ . "->dispatch_baz()");
     
 	$r->content_type('text/plain');
-    $Foo::Foo::output = "pid $$";
-    $r->print(__PACKAGE__ . "->dispatch_index()");
+    $Apache2::Foo::Foo::output = "pid $$";
+    $r->print(__PACKAGE__ . "->dispatch_baz()");
     return Apache2::Const::OK;
 }
 
@@ -35,7 +35,7 @@ sub post_dispatch {
   my $r = shift;
   # delay printing headers until all processing is done
   $r->content_type('text/plain');
-  $r->print($Foo::Foo::output);
+  $r->print($Apache2::Foo::Foo::output);
   $r->log->debug(__PACKAGE__ . "->post_dispatch()");
 }
 
