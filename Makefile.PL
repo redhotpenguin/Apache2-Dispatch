@@ -14,7 +14,6 @@ my %prereq = ('Apache::Test' => "1.23");
 
 my %makefile_params = (
                        'VERSION'   => '0.10',
-                       'PREREQ_PM' => \%prereq,
                       );
 
 # enable "make test"
@@ -32,6 +31,7 @@ $makefile_params{clean} = {FILES => "@scripts"};
 if ($mp_wanted == 2) {    # mod_perl2 specific makefile
     $prereq{'mod_perl2'} = 1.99023;    # this covers the naming change
     $makefile_params{'NAME'} = 'Apache2::Dispatch';
+    $makefile_params{'PREREQ_PM'} = \%prereq;
 
     require ModPerl::MM;
     ModPerl::MM::WriteMakefile(%makefile_params);
@@ -59,25 +59,23 @@ elsif ($mp_wanted != 2) {              # mod_perl1 specific makefile
 will need a C compiler and Apache/mod_perl sources.\n\n";
 
         $makefile_params{'PL_FILES'}  = {'set_pureperl.PL' => '0'};
-        $makefile_params{'PREREQ_PM'} = {mod_perl          => 1.2401,};
         $makefile_params{'clean'}     = {FILES             => '*.xs*'};
 
         import Apache::ExtUtils qw(command_table);
         require Apache::Dispatch::Util;
-        my $directives = Apache::Dispatch::Util->directives();
-        command_table($directives);
-
-    }
-
-    my $inc = Apache::src->new->inc;
-    die "Can't find mod_perl header files installed" unless $inc;
-
+		my @directives = Apache::Dispatch::Util->directives();
+        command_table(\@directives);
+        
+		my $inc = Apache::src->new->inc;
+        die "Can't find mod_perl header files installed" unless $inc;
+        $makefile_params{'INC'} = $inc;
+	}
+	$makefile_params{'PREREQ_PM'} = {mod_perl          => 1.2401};
     require ExtUtils::MakeMaker;
     ExtUtils::MakeMaker::WriteMakefile(
-                                       NAME => 'Apache::Dispatch',
-                                       INC  => $inc,
-                                       LIBS => [''],
-                                       %makefile_params,
+                                       NAME => __PACKAGE__,
+                                       PREREQ_PM => \%prereq,
+									   %makefile_params,
                                       );
 }
 

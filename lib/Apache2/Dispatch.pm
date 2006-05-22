@@ -22,6 +22,7 @@ push @Apache2::Dispatch::ISA, qw(Apache::Dispatch::Util);
 
 # Initialize the directives
 my $directives = __PACKAGE__->directives();
+
 Apache2::Module::add(__PACKAGE__, $directives);
 
 sub handler {
@@ -31,9 +32,9 @@ sub handler {
     #---------------------------------------------------------------------
     my $r = shift;
 
-    # Is there an advantage to keeping the pureperl option?
     my $dcfg;
-    $dcfg =
+
+	$dcfg =
       Apache2::Module::get_config(__PACKAGE__, $r->server, $r->per_dir_config);
 
     my $filter = $dcfg->{_filter}

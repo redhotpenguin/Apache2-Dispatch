@@ -15,16 +15,16 @@ our $VERSION = '0.10';
 
 use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);
-use Apache::Log;
+use Apache::Log ();
 use Apache::Dispatch::Util;
 push @Apache::Dispatch::ISA, qw(Apache::Dispatch::Util);
 
 $Apache::Dispatch::PUREPERL = 0;    # set during perl Makefile.PL
 
 if ($Apache::Dispatch::PUREPERL == 0) {
-    require Apache::ModuleConfig;
+	require Apache::ModuleConfig;
     require DynaLoader;
-    @Apache::Dispatch::ISA = qw(DynaLoader);
+	push @Apache::Dispatch::ISA, qw(DynaLoader);
     __PACKAGE__->bootstrap($VERSION);
 }
 
@@ -460,11 +460,9 @@ Bar::Baz, etc...
 
       Off   - do not use Apache::Filter (Default)
 
-  DispatchDebug - DEPRECATED
-    Per development notes this directive has been deprecated as of
-	Apache::Dispatch 0.10.  The debugging verbosity is controlled using
-	the Apache LogLevel directive.
-
+  DispatchDebug
+	Set DispatchDebug to 1 or 2 to control the verbosity of debug statements.
+  
 =head1 SPECIAL CODING GUIDELINES
 
 Migrating to Apache::Dispatch is relatively painless - it requires

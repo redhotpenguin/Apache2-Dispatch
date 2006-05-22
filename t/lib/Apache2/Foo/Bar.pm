@@ -5,24 +5,28 @@ use warnings;
 
 use Apache2::Const -compile => qw( OK SERVER_ERROR );
 use Apache2::RequestRec;
+use Apache2::RequestIO;
 
-@Foo::Bar::ISA = qw(Apache::Foo::Foo);
+@Foo::Bar::ISA = qw(Apache2::Foo::Foo);
 
 sub dispatch_index {
   # test calls to /Bar/index or /
   my $self = shift;
   my $r = shift;
-  $r->send_http_header('text/plain');
-  $r->print("Foo::Bar->dispatch_index()");
-  print STDERR "Foo::Bar->dispatch_index()\n";
+  $r->log_debug(__PACKAGE__ . "->dispatch_index()");
+  
+  $r->content_type('text/plain');
+  $r->print(__PACKAGE__ . "->dispatch_index()");
   return Apache2::Const::OK;
 }
 
 sub dispatch_baz {
     my ($class, $r) = @_;
+	$r->log->debug(__PACKAGE__ . "->dispatch_baz()");
     
-	$r->log->debug("Foo->dispatch_baz()");
+	$r->content_type('text/plain');
     $Foo::Foo::output = "pid $$";
+    $r->print(__PACKAGE__ . "->dispatch_index()");
     return Apache2::Const::OK;
 }
 
@@ -30,9 +34,9 @@ sub post_dispatch {
   my $self = shift;
   my $r = shift;
   # delay printing headers until all processing is done
-  $r->send_http_header('text/plain');
+  $r->content_type('text/plain');
   $r->print($Foo::Foo::output);
-  print STDERR "Foo->post_dispatch()\n";
+  $r->log->debug(__PACKAGE__ . "->post_dispatch()");
 }
 
 1;
@@ -47,7 +51,8 @@ here is a sample httpd.conf entry
   <Location /Test>
     SetHandler perl-script
     PerlHandler Apache2::Dispatch
-    DispatchPrefix Foo
+    DispatchUpperCase On
+	DispatchPrefix Foo
     DispatchExtras Pre Post Error
   </Location>
 

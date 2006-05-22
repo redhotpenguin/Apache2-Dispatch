@@ -1,4 +1,4 @@
-package Apache::Foo;
+package Apache::Foo::Foo;
 
 use Apache::Constants qw( OK SERVER_ERROR );
 use strict;
@@ -6,9 +6,10 @@ use strict;
 sub dispatch_foo {
     my $class = shift;
     my $r = shift;
-    $r->send_http_header('text/plain');
-    $r->print("Foo->dispatch_foo()");
-    print STDERR "Foo->dispatch_foo()\n";
+    $r->log->debug(__PACKAGE__ . "->dispatch_foo()\n";
+    
+	$r->send_http_header('text/plain');
+    $r->print("Foo::Foo->dispatch_foo()");
     return OK;
 }
 
@@ -38,8 +39,8 @@ sub dispatch_index {
     my $class = shift;
     my $r = shift;
     $r->send_http_header('text/plain');
-    $r->print("Foo->dispatch_index()");
-    print STDERR "Foo->dispatch_index()\n";
+    $r->print("Foo::Foo->dispatch_index()");
+    print STDERR "Foo::Foo->dispatch_index()\n";
     return OK;
 }
 

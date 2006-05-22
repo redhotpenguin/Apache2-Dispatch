@@ -198,7 +198,7 @@ sub _stat {
         my $mtime = (stat $INC{$module})[9];
 
         unless (defined $mtime && $mtime) {
-            $log->warn("Apache2::Dispatch cannot find $module!");
+            $log->warn("Apache::Dispatch cannot find $module!");
             return 1;
         }
 
@@ -211,7 +211,7 @@ sub _stat {
             eval { require $module };
 
             if ($@) {
-                $log->error("Apache2::Dispatch: $module failed reload! $@");
+                $log->error("Apache::Dispatch: $module failed reload! $@");
                 return;
             }
             elsif (!$@) {
@@ -224,7 +224,7 @@ sub _stat {
         }
     }
     else {
-        $log->warn("Apache2::Dispatch: $module not in \%INC!");
+        $log->warn("Apache::Dispatch: $module not in \%INC!");
     }
 
     return 1;
@@ -451,8 +451,8 @@ sub DispatchStat {
 
 sub DispatchRequire {
     my ($cfg, $parms, $arg) = @_;
-
-    $cfg->{_require} = $arg;
+    
+	$cfg->{_require} = $arg;
 }
 
 sub DispatchFilter {
@@ -471,6 +471,12 @@ sub DispatchUpperCase {
     my ($cfg, $parms, $arg) = @_;
 
     $cfg->{_uppercase} = $arg;
+}
+
+sub DispatchDebug {
+    my ($cfg, $parms, $arg) = @_;
+
+    $cfg->{_debug} = $arg;
 }
 
 =pod
