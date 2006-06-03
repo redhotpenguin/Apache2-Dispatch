@@ -1,51 +1,56 @@
 package Apache::Foo;
 
 use Apache::Constants qw( OK SERVER_ERROR );
+
 use strict;
+use warnings;
 
 sub dispatch_foo {
-    my $class = shift;
-    my $r = shift;
-    $r->log->debug(__PACKAGE__ . "->dispatch_foo()");
+    my ($class, $r) = @_;
+    $r->log->debug("$class->dispatch_foo()");
     
 	$r->send_http_header('text/plain');
-    $r->print(__PACKAGE__ . "->dispatch_foo()");
+    $r->print("$class->dispatch_foo()");
     return OK;
 }
 
-sub dispatch_uhoh {
+sub dispatch_bad {
     my ($class, $r) = @_;
 
-	$r->log->debug(__PACKAGE__ . "->dispatch_bar()");
+	$r->log->debug("$class->dispatch_bad()");
     return SERVER_ERROR;
 }
 
 sub pre_dispatch {
     my ($class, $r) = @_;
-    $r->log->debug(__PACKAGE__ . "->pre_dispatch()");
+    $r->log->debug("$class->pre_dispatch()");
+	
+	$r->send_http_header('text/plain');
+    $r->print("$class->pre_dispatch()");
 }
 
 sub post_dispatch {
     my ($class, $r) = @_;
-    $r->log->debug(__PACKAGE__ . "->post_dispatch()");
-	$r->print($Apache::Foo::output);
+    $r->log->debug("$class->post_dispatch()");
+    $r->print("$class->post_dispatch()");
+	#$r->print($Apache::Foo::output);
 }
 
 sub error_dispatch {
-    my $class = shift;
-    my $r = shift;
-    $r->send_http_header('text/plain');
-    $r->print("Yikes!  Foo->dispatch_error()");
-    $r->log->error("Yikes!  " . __PACKAGE__ . "->dispatch_error()");
+    my ($class, $r) = @_;
+    $r->log->error("Yikes! $class->dispatch_error()");
+    
+	$r->send_http_header('text/plain');
+    $r->print("Yikes! $class->dispatch_error()");
     return OK;
 }
 
 sub dispatch_index {
-    my $class = shift;
-    my $r = shift;
-    $r->send_http_header('text/plain');
-    $r->print(__PACKAGE__ . "->dispatch_index()");
-    $r->log->debug(__PACKAGE__ . "->dispatch_index()");
+    my ($class, $r) = @_;
+    $r->log->debug("$class->dispatch_index()");
+    
+	$r->send_http_header('text/plain');
+    $r->print("$class->dispatch_index()");
     return OK;
 }
 

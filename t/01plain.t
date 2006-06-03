@@ -8,7 +8,7 @@ plan tests => 4, \&have_lwp;
 
 # Test Apache2::Foo->dispatch_index
 my $uri = '/plain';
-ok GET_OK $uri;
+ok(GET_OK $uri, 'test passed');
 
 # Test Apache2::Foo->dispatch_foo
 $uri = '/plain/foo';

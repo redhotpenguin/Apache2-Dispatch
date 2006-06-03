@@ -26,7 +26,6 @@
 	DispatchRequire On
 	DispatchExtras Pre Post
 	DispatchDebug 2 
-	
 	<IfDefine APACHE2>
 		DispatchPrefix Apache2::Foo
 		PerlResponseHandler Apache2::Dispatch Apache2::Foo::Filter
@@ -35,15 +34,13 @@
 		DispatchPrefix Apache::Foo
 		PerlHandler Apache::Dispatch Apache::Foo::Filter
 	</IfDefine>
-	
 </Location>
 
 <Location /extras>
 	SetHandler perl-script
 	DispatchRequire On
-	DispatchExtras Pre Error
+	DispatchExtras Pre Post Error
 	DispatchDebug 2 
-	
 	<IfDefine APACHE2>
 		DispatchPrefix Apache2::Foo
 		PerlResponseHandler Apache2::Dispatch
@@ -52,7 +49,6 @@
 		DispatchPrefix Apache::Foo
 		PerlHandler Apache::Dispatch
 	</IfDefine>
-	
 </Location>
 
 <Location /oo>
@@ -61,7 +57,6 @@
 	DispatchAUTOLOAD On
 	DispatchISA Foo::Parent
 	DispatchDebug 2 
-
 	<IfDefine APACHE2>
 		DispatchPrefix Apache2::Foo
 		PerlResponseHandler Apache2::Dispatch

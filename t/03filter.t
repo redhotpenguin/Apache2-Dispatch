@@ -10,5 +10,5 @@ my $url = '/filtered/Bar/good';
 
 eval { require Apache::Filter };
 
-skip 1 GET_OK $url;
+ok GET_OK $url;
 

@@ -211,15 +211,15 @@ sub handler {
     foreach my $extra (@extras) {
         if ($extra eq "PRE") {
             $prehandler =
-              __PACKAGE__->_check_dispatch($object, "pre_dispatch", $autoload, $log);
+              __PACKAGE__->_check_dispatch($object, "pre_dispatch", $autoload, $log, $debug);
         }
         elsif ($extra eq "POST") {
             $posthandler =
-              __PACKAGE__->_check_dispatch($object, "post_dispatch", $autoload, $log);
+              __PACKAGE__->_check_dispatch($object, "post_dispatch", $autoload, $log, $debug);
         }
         elsif ($extra eq "ERROR") {
             $errorhandler =
-              __PACKAGE__->_check_dispatch($object, "error_dispatch", $autoload, $log);
+              __PACKAGE__->_check_dispatch($object, "error_dispatch", $autoload, $log, $debug);
         }
     }
 

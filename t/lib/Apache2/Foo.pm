@@ -7,45 +7,47 @@ use Apache2::RequestIO;
 
 sub dispatch_foo {
     my ($class, $r) = @_;
-    $r->log->debug(__PACKAGE__ . "->dispatch_foo()");
+    $r->log->debug("$class->dispatch_foo()");
     
 	$r->content_type('text/plain');
-    $r->print(__PACKAGE__ . "->dispatch_foo()");
+    $r->print("$class->dispatch_foo()");
     return Apache2::Const::OK;
 }
 
-sub dispatch_uhoh {
+sub dispatch_bad {
     my ($class, $r) = @_;
+	$r->log->debug("$class->dispatch_bad()");
     
-	$r->log->debug(__PACKAGE__ . "->dispatch_uhoh()");
     return Apache2::Const::SERVER_ERROR;
 }
 
 sub pre_dispatch {
     my ($class, $r) = @_;
-    $r->log->debug(__PACKAGE__ . "->pre_dispatch()");
+    $r->log->debug("$class->pre_dispatch()");
+	$r->print("$class->pre_dispatch");
 }
 
 sub post_dispatch {
     my ($class, $r) = @_;
-    $r->log->debug(__PACKAGE__ . "->post_dispatch()");
+    $r->log->debug("$class->post_dispatch()");
+	$r->print("$class->post_dispatch");
 }
 
 sub error_dispatch {
     my ($class, $r) = @_;
-    $r->log->debug(__PACKAGE__ . "->error_dispatch()");
+    $r->log->debug("$class->error_dispatch()");
     
 	$r->content_type('text/plain');
-    $r->print("Yikes!  " . __PACKAGE__ . "->dispatch_error()");
+    $r->print("Yikes!  $class->dispatch_error()");
     return Apache2::Const::OK;
 }
 
 sub dispatch_index {
     my ($class, $r) = @_;
-    $r->log->debug(__PACKAGE__ . "->dispatch_index()");
+    $r->log->debug("$class->dispatch_index()");
     
 	$r->content_type('text/plain');
-    $r->print(__PACKAGE__ . "->dispatch_index()");
+    $r->print("$class->dispatch_index()");
     return Apache2::Const::OK;
 }
 

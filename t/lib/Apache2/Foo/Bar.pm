@@ -11,8 +11,7 @@ use Apache2::RequestIO;
 
 sub dispatch_index {
   # test calls to /Bar/index or /
-  my $self = shift;
-  my $r = shift;
+  my ($class, $r) = @_;
   $r->log_debug(__PACKAGE__ . "->dispatch_index()");
   
   $r->content_type('text/plain');
@@ -31,10 +30,9 @@ sub dispatch_baz {
 }
 
 sub post_dispatch {
-  my $self = shift;
-  my $r = shift;
+  my ($self, $r) = @_;
   # delay printing headers until all processing is done
-  $r->content_type('text/plain');
+  #$r->content_type('text/plain');
   $r->print($Apache2::Foo::Foo::output);
   $r->log->debug(__PACKAGE__ . "->post_dispatch()");
 }

@@ -318,13 +318,13 @@ sub _translate_uri {
     my ($r, $prefix, $newloc, $log, $debug) = @_;
 
     my $uri = $r->uri;
-
-    my $location;
+    
+	my $location;
 
     # change all the / to ::
     (my $class_and_method = $r->uri) =~ s!/!::!g;
-
-    if ($newloc) {
+    
+	if ($newloc) {
         $log->info("\tmodifying location from ", $r->location, " to $newloc")
           if $debug > 1;
         ($location = $newloc) =~ s!/!::!g;
@@ -381,7 +381,9 @@ sub _check_dispatch {
     #---------------------------------------------------------------------
 	
 	my $pkg = shift;
-    my ($object, $method, $autoload, $log, $debug) = @_;
+	require Data::Dumper;
+	
+	my ($object, $method, $autoload, $log, $debug) = @_;
 
     my $class = ref($object);
 

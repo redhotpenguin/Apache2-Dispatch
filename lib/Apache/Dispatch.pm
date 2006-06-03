@@ -485,7 +485,8 @@ Bar::Baz, etc...
       Off   - do not use Apache::Filter (Default)
 
   DispatchDebug
-	Set DispatchDebug to 1 or 2 to control the verbosity of debug statements.
+    Set DispatchDebug to 1 or 2 to control the verbosity of
+    debug statements.
   
 =head1 SPECIAL CODING GUIDELINES
 
