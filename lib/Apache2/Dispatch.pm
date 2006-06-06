@@ -37,10 +37,6 @@ sub handler {
 	$dcfg =
       Apache2::Module::get_config(__PACKAGE__, $r->server, $r->per_dir_config);
 
-    my $filter = $dcfg->{_filter}
-      || $r->dir_config('Filter')
-      || 0;
-
     my $debug        = $dcfg->{_debug} || 0;
     my $autoload     = $dcfg->{_autoload};
     my $stat         = $dcfg->{_stat};
@@ -60,19 +56,6 @@ sub handler {
     #---------------------------------------------------------------------
 
     $log->debug("Using Apache2::Dispatch");
-
-    if ($filter) {
-        $log->debug("\tregistering handler with Apache::Filter");
-
-        require Apache2::Filter;
-
-        # in case we used DispatchFilter directive instead, make sure
-        # that other filters in the chain recognize us...
-        $r->dir_config->set(Filter => 'On');
-
-        $r   = $r->filter_register;
-        $log = $r->server->log;
-    }
 
     $log->debug("\tchecking $uri for possible dispatch...")
       if $debug > 1;
@@ -95,8 +78,6 @@ sub handler {
                     $uppercase,
                     "\n\t\tDispatchStat: ",
                     $stat,
-                    "\n\t\tDispatchFilter: ",
-                    $filter,
                     "\n\t\tDispatchDebug: ",
                     $debug,
                     "\n\t\tDispatchLocation: ",
@@ -477,28 +458,6 @@ you must do three things:
 That's it - now the handler can be swapped in and out of Dispatch 
 without further modification.  See the Eagle book on method handlers
 for more details.
-
-=head1 FILTERING
-
-Apache2::Dispatch provides for output filtering using Apache::Filter
-1.013 and above.
-
-  <Location /Foo>
-    SetHandler perl-script
-    PerlHandler Apache2::Dispatch Apache::Compress
-
-    DispatchPrefix Bar
-    DispatchFilter On
-  </Location>
-
-Your handler need do nothing special to make its output the start of
-the chain - Apache2::Dispatch registers itself with Apache::Filter and
-hides the task from your handler.  Thus, any dispatched handler is
-automatically Apache::Filter ready without the need for additional
-code.
-
-The only caveat is that you must use the request object that is passed
-to the handler and not get it directly using Apache->request.
 
 =head1 AUTOLOAD
 

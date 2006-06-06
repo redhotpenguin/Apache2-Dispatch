@@ -74,7 +74,7 @@ sub handler {
     my $autoload     = $dcfg->{_autoload};
     my $stat         = $dcfg->{_stat};
     my $prefix       = $dcfg->{_prefix};
-    my $uppercase    = $dcfg->{_uppercase};
+    my $uppercase    = $dcfg->{_uppercase} || 'Off';
     my $new_location = $dcfg->{_newloc};
     my $require      = $dcfg->{_require};
     my @parents      = $dcfg->{_isa} ? @{$dcfg->{_isa}} : ();
@@ -99,6 +99,7 @@ sub handler {
         # that other filters in the chain recognize us...
         $r->dir_config->set(Filter => 'On');
 
+		$r   = $r->filter_register;
         $log = $r->server->log;
     }
 

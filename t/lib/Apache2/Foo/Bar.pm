@@ -9,15 +9,15 @@ use Apache2::RequestIO;
 
 @Foo::Bar::ISA = qw(Apache2::Foo::Foo);
 
-sub dispatch_index {
+#sub dispatch_index {
   # test calls to /Bar/index or /
-  my ($class, $r) = @_;
-  $r->log_debug(__PACKAGE__ . "->dispatch_index()");
+#  my ($class, $r) = @_;
+#  $r->log_debug(__PACKAGE__ . "->dispatch_index()");
   
-  $r->content_type('text/plain');
-  $r->print(__PACKAGE__ . "->dispatch_index()");
-  return Apache2::Const::OK;
-}
+#  $r->content_type('text/plain');
+#  $r->print(__PACKAGE__ . "->dispatch_index()");
+#  return Apache2::Const::OK;
+#}
 
 sub dispatch_baz {
     my ($class, $r) = @_;

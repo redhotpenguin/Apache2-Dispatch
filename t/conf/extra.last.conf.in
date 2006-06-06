@@ -24,13 +24,13 @@
 	SetHandler perl-script
 	DispatchFilter On
 	DispatchRequire On
-	DispatchExtras Pre Post
 	DispatchDebug 2 
 	<IfDefine APACHE2>
 		DispatchPrefix Apache2::Foo
 		PerlResponseHandler Apache2::Dispatch Apache2::Foo::Filter
 	</IfDefine>
 	<IfDefine APACHE1>
+		PerlModule Apache::Filter
 		DispatchPrefix Apache::Foo
 		PerlHandler Apache::Dispatch Apache::Foo::Filter
 	</IfDefine>
