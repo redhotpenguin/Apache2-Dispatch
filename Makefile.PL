@@ -10,7 +10,8 @@ my ($mp_wanted, $mp_ver) = &get_mp_ver();
 
 print STDERR "Using mod_perl/$mp_ver\n\n";
 
-my %prereq = ('Apache::Test' => "1.23");
+my %prereq = ('Apache::Test' => "1.23",
+			  'LWP::UserAgent' => 0);
 
 my %makefile_params = (
                        'VERSION'   => '0.10',
