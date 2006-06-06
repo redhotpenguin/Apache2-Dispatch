@@ -1,14 +1,24 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Apache::Test;
+use Apache::Test qw(-withtestmore);
 use Apache::TestRequest;
 
-plan tests => 1, \&have_lwp;
+# figure out what version we have - I don't like this method but it works
+my $httpd   = Apache::Test::vars('httpd');
+my $version = `$httpd -v`;
 
-my $url = '/filtered/Bar/good';
+if ($version =~ m/Apache\/2/) {
+    plan skip_all => "Filter test irrelevant on mod_perl2";
+}
+else {
+    plan tests => 2, \&have_lwp;
+}
+
+my $url = '/filtered/foo';
 
 eval { require Apache::Filter };
 
-ok GET_OK $url;
-
+my $res = GET $url;
+ok($res->is_success);
+ok($res->content =~ m/dispatchfoo/i);
