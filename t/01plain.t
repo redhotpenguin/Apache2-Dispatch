@@ -4,11 +4,11 @@ use warnings FATAL => 'all';
 use Apache::Test;
 use Apache::TestRequest;
 
-plan tests => 4, \&have_lwp;
+plan tests => 4, \&need_lwp;
 
 # Test Apache2::Foo->dispatch_index
 my $uri = '/plain';
-ok(GET_OK $uri, 'test passed');
+ok GET_OK $uri;
 
 # Test Apache2::Foo->dispatch_foo
 $uri = '/plain/foo';

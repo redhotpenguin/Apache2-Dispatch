@@ -9,10 +9,10 @@ my $httpd   = Apache::Test::vars('httpd');
 my $version = `$httpd -v`;
 
 if ($version =~ m/Apache\/2/) {
-    plan skip_all => "Filter test irrelevant on mod_perl2";
+    plan skip_all => "Filtering not yet implemented in Apache2::Dispatch";
 }
 else {
-    plan tests => 2, \&have_lwp;
+    plan tests => 2, \&need_lwp;
 }
 
 my $url = '/filtered/foo';
