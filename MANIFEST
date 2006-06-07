@@ -1,8 +1,11 @@
 Changes
 MANIFEST
 Makefile.PL
+INSTALL
 README
 ToDo
+test.pl
+set_pureperl.PL
 lib/Apache/Dispatch.pm
 lib/Apache/Dispatch/Util.pm
 lib/Apache2/Dispatch.pm
