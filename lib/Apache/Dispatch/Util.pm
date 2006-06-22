@@ -261,8 +261,7 @@ sub _set_ISA {
     # set the ISA array for the class
     # this method is for internal use only
     #---------------------------------------------------------------------
-	my $pkg;
-    my ($class, $log, @parents) = @_;
+    my ($pkg, $class, $log, @parents) = @_;
 
     # turn off strict here so we can get at the class @ISA
     no strict 'refs';
@@ -270,11 +269,14 @@ sub _set_ISA {
     $log->debug("\t\@ISA for $class currently contains ",
                 (join ", ", @{"${class}::ISA"}));
     $log->debug("\tabout to merge ", (join ", ", @parents));
-
-    # only add classes to @ISA if they are not there already
+    
+	# only add classes to @ISA if they are not there already
     my %seen;
 
     @{"${class}::ISA"} = grep !$seen{$_}++, (@{"${class}::ISA"}, @parents);
+	
+	$log->debug("\t\@ISA for $class now contains ",
+                (join ", ", @{"${class}::ISA"}));
 
     return 1;
 }
@@ -381,7 +383,6 @@ sub _check_dispatch {
     #---------------------------------------------------------------------
 	
 	my $pkg = shift;
-	require Data::Dumper;
 	
 	my ($object, $method, $autoload, $log, $debug) = @_;
 
@@ -393,7 +394,7 @@ sub _check_dispatch {
       if $debug > 1;
 
     if ($autoload) {
-        $coderef = $object->can($method) || $object->can("AUTOLOAD");
+		$coderef = $object->can($method) || $object->can("AUTOLOAD");
     }
     else {
         $coderef = $object->can($method);

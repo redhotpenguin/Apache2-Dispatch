@@ -7,8 +7,6 @@ use Apache2::Const -compile => qw( OK SERVER_ERROR );
 use Apache2::RequestRec;
 use Apache2::RequestIO;
 
-@Foo::Bar::ISA = qw(Apache2::Foo::Foo);
-
 sub dispatch_baz {
     my ($class, $r) = @_;
 	$r->log->debug("$class->dispatch_baz()");

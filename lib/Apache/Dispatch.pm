@@ -169,7 +169,7 @@ sub handler {
     #---------------------------------------------------------------------
 
     if (@parents) {
-        $rc = __PACKAGE__->_set_ISA($class, $log, $debug, @parents);
+        $rc = __PACKAGE__->_set_ISA($prefix, $log, @parents);
 
         unless ($rc) {
             $log->error("\tDispatchISA did not return successfully!");
