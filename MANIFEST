@@ -19,5 +19,6 @@ t/lib/Apache2/Foo/Bar.pm
 t/01plain.t
 t/02extras.t
 t/03filter.t
+t/04oo.t
 t/conf/extra.last.conf.in
 t/TEST.PL
