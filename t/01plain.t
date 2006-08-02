@@ -1,10 +1,16 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Apache::Test;
-use Apache::TestRequest;
+use Apache::Dispatch::TestConfig;
+use Test::More;
 
-plan tests => 4, \&need_lwp;
+plan skip_all => 'Apache::Test not configured'
+  unless $Apache::Dispatch::TestConfig::HAS_APACHE_TEST;
+
+plan skip_all => 'test library dependencies not met'
+  unless eval { have_lwp() };
+
+plan tests => 4;
 
 # Test Apache2::Foo->dispatch_index
 my $uri = '/plain';
@@ -14,7 +20,7 @@ ok GET_OK $uri;
 $uri = '/plain/foo';
 ok GET_OK $uri;
 
-# Test non-usage of Apache2::Foo::Bar->dispatch_index since 
+# Test non-usage of Apache2::Foo::Bar->dispatch_index since
 # Apache2::Foo->dispatch_bar does not exist
 $uri = '/plain/bar';
 my $res = GET $uri;

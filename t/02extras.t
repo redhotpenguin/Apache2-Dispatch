@@ -1,10 +1,16 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Apache::Test;
-use Apache::TestRequest;
+use Apache::Dispatch::TestConfig;
+use Test::More;
 
-plan tests => 5;#, \&need_lwp;
+plan skip_all => 'Apache::Test not configured'
+  unless $Apache::Dispatch::TestConfig::HAS_APACHE_TEST;
+
+plan skip_all => 'test library dependencies not met'
+  unless eval { have_lwp() };
+
+plan tests => 5;
 
 my $uri = '/extras';
 my $res = GET $uri;
