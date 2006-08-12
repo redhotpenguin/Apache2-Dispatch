@@ -33,25 +33,22 @@ warn $@ if $@;
 
 sub MY::test {
 
-    my $test = shift->MM::test(@_);
-
     eval { require Test::More } or return <<EOF;
 test::
+\t\@echo
 \t\@echo sorry, cannot run tests without Test::More
+\t\@echo
 EOF
 
     return HAS_APACHE_TEST if HAS_APACHE_TEST;
 
-    if ( eval { require Devel::Cover } ) {
-        $test .= <<EOF;
-testcover ::
-	cover -delete
-	HARNESS_PERL_SWITCHES=-MDevel::Cover make test
-	cover
+    return <<EOF
+test::
+\t\@echo
+\t\@echo sorry, cannot run tests without a properly
+\t\@echo configured Apache-Test environment
+\t\@echo
 EOF
-    }
-
-    return $test;
 }
 
 sub MY::clean {
@@ -70,7 +67,7 @@ my ( $mp_wanted, $mp_ver ) = &get_mp_ver();
 
 print STDERR "Using mod_perl/$mp_ver\n\n";
 
-my %prereq = ( 'Apache::Test' => "1.23" );
+my %prereq = ();
 
 my %makefile_params = ( 'VERSION' => '0.10', );
 
@@ -150,35 +147,35 @@ supplied contradicting requirements:
     enviroment variable MOD_PERL=$env
     Makefile.PL option  MOD_PERL=$flag
 EOF
-    }
+}
 
-    my $wanted = 2;    ## default to wanting mp2
-    $wanted = 1 if $env == 1 || $flag == 1;
+my $wanted = 2;    ## default to wanting mp2
+$wanted = 1 if $env == 1 || $flag == 1;
 
-    my $mp_ver;
+my $mp_ver;
 
-    if ( $wanted == 2 ) {
-        eval { require mod_perl2 };
-        my $req_ver = 1.999022;
-        if ( $mod_perl2::VERSION < $req_ver || $@ ) {
-            die
+if ( $wanted == 2 ) {
+    eval { require mod_perl2 };
+    my $req_ver = 1.999022;
+    if ( $mod_perl2::VERSION < $req_ver || $@ ) {
+        die
 "mod_perl2 required version is $req_ver, you have $mod_perl2::VERSION.  Please upgrade to continue.";
-        }
-        else {
-            $mp_ver = $mod_perl2::VERSION;
-        }
     }
     else {
-        eval { require mod_perl };
-        no warnings qw(uninitialized);
-        if ( $mod_perl::VERSION > 1.99 || $@ ) {
-            die "You don't seem to have mod_perl 1.0 installed";
-        }
-        else {
-            $mp_ver = $mod_perl::VERSION;
-        }
+        $mp_ver = $mod_perl2::VERSION;
     }
+}
+else {
+    eval { require mod_perl };
+    no warnings qw(uninitialized);
+    if ( $mod_perl::VERSION > 1.99 || $@ ) {
+        die "You don't seem to have mod_perl 1.0 installed";
+    }
+    else {
+        $mp_ver = $mod_perl::VERSION;
+    }
+}
 
-    return ( $wanted, $mp_ver );
+return ( $wanted, $mp_ver );
 }
 

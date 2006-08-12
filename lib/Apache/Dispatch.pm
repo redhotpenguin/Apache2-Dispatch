@@ -98,7 +98,8 @@ sub handler {
         # in case we used DispatchFilter directive instead, make sure
         # that other filters in the chain recognize us...
         $r->dir_config->set(Filter => 'On');
-
+		
+		require Apache::Filter;
 		$r   = $r->filter_register;
         $log = $r->server->log;
     }

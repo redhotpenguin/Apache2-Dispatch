@@ -1,16 +1,10 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Apache::Dispatch::TestConfig;
-use Test::More;
+use Apache::Test qw(ok plan :withtestmore );
+use Apache::TestRequest qw(GET GET_OK);
 
-plan skip_all => 'Apache::Test not configured'
-  unless $Apache::Dispatch::TestConfig::HAS_APACHE_TEST;
-
-plan skip_all => 'test library dependencies not met'
-  unless eval { have_lwp() };
-
-plan tests => 4;
+plan tests => 4, need_lwp;
 
 # Test Apache2::Foo->dispatch_index
 my $uri = '/plain';
