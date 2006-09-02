@@ -1,7 +1,13 @@
-Install and guess which version of mod_perl you use, defaulting to mp2 if both
-exist.
+------------------------------------------------------------------------------
+Install Apache::Dispatch for mod_perl 1.
 
-perl Makefile.PL
+perl Makefile.PL -httpd /path/to/my/httpd
+make && make test && make install
+
+------------------------------------------------------------------------------
+Install Apache2::Dispatch for mod_perl 2.
+
+perl Makefile.PL -httpd /path/to/my/httpd -apxs /path/to/my/apxs
 make && make test && make install
 
 ------------------------------------------------------------------------------

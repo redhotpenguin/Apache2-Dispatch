@@ -9,7 +9,7 @@ use lib 'lib';
 use Apache::Dispatch::Util;
 use ExtUtils::MakeMaker;
 
-use constant HAS_APACHE_TEST => eval {
+my $HAS_APACHE_TEST = eval {
     require Apache::Test;
     require Apache::TestMM;
 
@@ -17,19 +17,21 @@ use constant HAS_APACHE_TEST => eval {
     Apache::TestMM::filter_args();
 
     my %args = @Apache::TestMM::Argv;
-
-    die 'suitable httpd required'
-      unless ( $args{apxs}
+    return 0
+      unless (
+        (
+            Apache::TestConfig->can('custom_config_path')
+            and -f Apache::TestConfig->custom_config_path()
+        )
+        or $args{apxs}
         or $args{httpd}
         or $ENV{APACHE_TEST_HTTPD}
-        or $ENV{APACHE_TEST_APXS} );
+        or $ENV{APACHE_TEST_APXS}
+      );
 
     Apache::TestMM::generate_script('t/TEST');
-
-    return Apache::TestMM->test;
+    return 1;
 };
-
-warn $@ if $@;
 
 sub MY::test {
 
@@ -40,7 +42,7 @@ test::
 \t\@echo
 EOF
 
-    return HAS_APACHE_TEST if HAS_APACHE_TEST;
+    return $HAS_APACHE_TEST if $HAS_APACHE_TEST;
 
     return <<EOF
 test::
@@ -53,7 +55,7 @@ EOF
 
 sub MY::clean {
 
-    if (HAS_APACHE_TEST) {
+    if ($HAS_APACHE_TEST) {
         require Apache::TestMM;
 
         return Apache::TestMM::clean(@_);
@@ -79,7 +81,7 @@ if ( $mp_wanted == 2 ) {    # mod_perl2 specific makefile
     WriteMakefile(%makefile_params);
 }
 
-elsif ( $mp_wanted != 2 ) {            # mod_perl1 specific makefile
+elsif ( $mp_wanted == 1 ) {            # mod_perl1 specific makefile
     eval {
         require Apache::ExtUtils;
         require Apache::src;
@@ -123,6 +125,47 @@ will need a C compiler and Apache/mod_perl sources.\n\n";
 
 sub get_mp_ver {
 
+    my $at_ver;
+    my %at_args;
+	if ($HAS_APACHE_TEST) {
+		%at_args =  @Apache::TestMM::Argv;
+	} elsif	( @ARGV ) {
+		%at_args = @ARGV;
+		$at_args{'httpd'} = $at_args{'-httpd'};
+		$at_args{'apxs'}  = $at_args{'-apxs'};
+	}
+
+    if ( $at_args{'apxs'} && $at_args{'httpd'} ) {
+
+        # probably mp2
+        ($at_ver) = `$at_args{'httpd'} -v` =~ m!Apache\/(\d{1})!;
+		if ( $at_ver == 1 ) {
+			die <<EOF;
+Sorry dynamic builds are not supported for mod_perl 1
+EOF
+		} elsif (!$at_ver) {
+			die <<EOF;
+Couldn't determine an apache version from your -httpd argument
+EOF
+		}
+	}
+    elsif ( $at_args{'httpd'} ) {
+
+        # probably mp1
+        ($at_ver) = `$at_args{'httpd'} -v` =~ m!Apache\/(\d{1})!;
+        if ( $at_ver == 2 ) {    # static build for mp2 not supported
+            die <<EOF;
+You specified -httpd, and httpd version is 2, but static
+builds in mp2 are not yet supported.  Please see INSTALL
+or specify a -apxs /path/to/apxs option.
+EOF
+        }
+        unless ( $at_ver == 1 ) {
+			die <<EOF;
+Couldn't determine an apache version from your -httpd argument
+EOF
+		}	
+	}
     my $flag = 0;
     my @args = ();
 
@@ -147,35 +190,61 @@ supplied contradicting requirements:
     enviroment variable MOD_PERL=$env
     Makefile.PL option  MOD_PERL=$flag
 EOF
-}
+    }
 
-my $wanted = 2;    ## default to wanting mp2
-$wanted = 1 if $env == 1 || $flag == 1;
+    my $wanted;
+    $wanted = 2 if $env == 2 || $flag == 2 || $at_ver == 2;
+    $wanted = 1 if $env == 1 || $flag == 1 || $at_ver == 1;
 
-my $mp_ver;
+    unless ($wanted) {
 
-if ( $wanted == 2 ) {
-    eval { require mod_perl2 };
-    my $req_ver = 1.999022;
-    if ( $mod_perl2::VERSION < $req_ver || $@ ) {
-        die
+        # if still unknown try to require mod_perl.pm
+        eval { require mod_perl2 };
+        if ($@) {
+
+            # if we don't have mp1, check for mp2
+            eval { require mod_perl } if ($@);
+            unless ($@) {
+                $wanted = 1;
+            }
+        }
+        else {
+            $wanted = 2;
+        }
+    }
+
+    if ( !$wanted ) {
+        die "can't determine your mod_perl version, see INSTALL\n";
+    }
+    elsif ( !( $wanted == 1 || $wanted == 2 ) ) {
+        die "don't know anything about mod_perl generation: $wanted\n"
+          . "currently supporting only generations 1 and 2";
+    }
+
+    my $mp_ver;
+
+    if ( $wanted == 2 ) {
+        eval { require mod_perl2 };
+        my $req_ver = 1.999022;
+        if ( $mod_perl2::VERSION < $req_ver || $@ ) {
+            die
 "mod_perl2 required version is $req_ver, you have $mod_perl2::VERSION.  Please upgrade to continue.";
+        }
+        else {
+            $mp_ver = $mod_perl2::VERSION;
+        }
     }
-    else {
-        $mp_ver = $mod_perl2::VERSION;
+    elsif ( $wanted == 1 ) {
+        eval { require mod_perl };
+        no warnings qw(uninitialized);
+        if ( $mod_perl::VERSION > 1.99 || $@ ) {
+            die "You don't seem to have mod_perl 1.0 installed, see INSTALL\n";
+        }
+        else {
+            $mp_ver = $mod_perl::VERSION;
+        }
     }
-}
-else {
-    eval { require mod_perl };
-    no warnings qw(uninitialized);
-    if ( $mod_perl::VERSION > 1.99 || $@ ) {
-        die "You don't seem to have mod_perl 1.0 installed";
-    }
-    else {
-        $mp_ver = $mod_perl::VERSION;
-    }
-}
 
-return ( $wanted, $mp_ver );
+    return ( $wanted, $mp_ver );
 }
 
