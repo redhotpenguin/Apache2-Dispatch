@@ -301,6 +301,10 @@ SEE ALSO
 perl(1), mod_perl(1), Apache(3), Apache::Filter(3), Apache::Reload(3),
 Apache::StatINC(3)
 
+MAINTAINER
+
+Fred Moyer <phred@apache.org>
+
 AUTHOR
 
 Geoffrey Young <geoff@cpan.org>

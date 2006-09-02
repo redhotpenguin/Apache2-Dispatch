@@ -518,13 +518,17 @@ the request.  This might change to SERVER_ERROR in the future...
 perl(1), mod_perl(1), Apache(3), Apache::Filter(3), Apache::Reload(3),
 Apache::StatINC(3)
 
+=head1 MAINTAINER
+
+Fred Moyer <phred@apache.org>
+
 =head1 AUTHOR
 
 Geoffrey Young <geoff@cpan.org>
 
 =head1 COPYRIGHT
 
-Copyright 2001 Geoffrey Young - all rights reserved.
+Copyright 2001-2006 Geoffrey Young - all rights reserved.
 
 This library is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
