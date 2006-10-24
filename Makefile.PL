@@ -71,7 +71,7 @@ print STDERR "Using mod_perl/$mp_ver\n\n";
 
 my %prereq = ();
 
-my %makefile_params = ( 'VERSION' => '0.10', );
+my %makefile_params = ( 'VERSION' => '0.10_01', );
 
 if ( $mp_wanted == 2 ) {    # mod_perl2 specific makefile
     $prereq{'mod_perl2'} = 1.99023;    # this covers the naming change
@@ -237,7 +237,7 @@ EOF
     elsif ( $wanted == 1 ) {
         eval { require mod_perl };
         no warnings qw(uninitialized);
-        if ( $mod_perl::VERSION > 1.99 || $@ ) {
+        if ( $@ ) {
             die "You don't seem to have mod_perl 1.0 installed, see INSTALL\n";
         }
         else {
