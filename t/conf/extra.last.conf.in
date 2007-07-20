@@ -6,6 +6,21 @@
 		PerlModule Apache::Dispatch
 	</IfDefine>
 
+	<Location />
+		SetHandler perl-script
+		DispatchRequire On
+		DispatchDebug 2 
+		DispatchUpperCase On
+		<IfDefine APACHE2>
+			DispatchPrefix Apache2::Foo
+			PerlResponseHandler Apache2::Dispatch
+		</IfDefine>
+		<IfDefine APACHE1>
+			PerlHandler Apache::Dispatch
+			DispatchPrefix Apache::Foo
+		</IfDefine>
+	</Location>
+
 	<Location /plain>
 		SetHandler perl-script
 		DispatchRequire On

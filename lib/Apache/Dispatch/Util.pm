@@ -350,8 +350,8 @@ sub _translate_uri {
     else {
 
         # <Location />
-        $prefix .= "::";
-        $times = $class_and_method =~ s/^/$prefix/e;
+        $times = 1;
+        $class_and_method = $prefix;
     }
 
     unless ($times) {

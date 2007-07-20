@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache::Dispatch
 
+0.10_02  07.19.2007
+  - fix the unadvertised feature which allows handling <Location />
+
 0.10_01  10.23.2006
   - move common methods to Apache::Dispatch::Util and adjust @ISA for
 	Apache*::Dispatch modules to use common methods via inheritance - fred

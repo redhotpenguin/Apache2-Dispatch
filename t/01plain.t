@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use Apache::Test qw(ok plan :withtestmore );
 use Apache::TestRequest qw(GET GET_OK);
 
-plan tests => 4, need_lwp;
+plan tests => 5, need_lwp;
 
 # Test Apache2::Foo->dispatch_index
 my $uri = '/plain';
@@ -24,3 +24,6 @@ ok $res->code == 404;
 $uri = '/plain/bar/baz';
 ok GET_OK $uri;
 
+# Test root location special case
+$uri = '/';
+ok GET_OK $uri
