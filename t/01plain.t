@@ -1,8 +1,9 @@
 use strict;
 use warnings FATAL => 'all';
 
-use Apache::Test qw(ok plan :withtestmore );
+use Apache::Test qw( :withtestmore );
 use Apache::TestRequest qw(GET GET_OK);
+use Test::More;
 
 plan tests => 5, need_lwp;
 

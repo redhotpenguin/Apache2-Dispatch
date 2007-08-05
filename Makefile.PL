@@ -71,7 +71,7 @@ print STDERR "Using mod_perl/$mp_ver\n\n";
 
 my %prereq = ();
 
-my %makefile_params = ( 'VERSION' => '0.10_01', );
+my %makefile_params = ( 'VERSION' => '0.10_02', );
 
 if ( $mp_wanted == 2 ) {    # mod_perl2 specific makefile
     $prereq{'mod_perl2'} = 1.99023;    # this covers the naming change

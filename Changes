@@ -1,5 +1,9 @@
 Revision history for Perl extension Apache::Dispatch
 
+0.10_03
+  - use the :withtestmore feature correctly
+  - use like() instead of ok( $foo =~ m/bar/ )
+
 0.10_02  07.19.2007
   - fix the unadvertised feature which allows handling <Location />
 
