@@ -3,7 +3,6 @@ use warnings FATAL => 'all';
 
 use Apache::Test qw( -withtestmore );
 use Apache::TestRequest qw(GET);
-use Test::More;
 
 plan tests => 2, need_lwp;
 
