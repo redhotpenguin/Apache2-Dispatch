@@ -263,7 +263,13 @@ EOF
 
     return $self->Apache::TestMM::test(@_) if $HAS_APACHE_TEST;
 
-    return $self->SUPER::test(@_);
+    return <<EOF
+test::
+\t\@echo
+\t\@echo sorry, cannot run tests without a properly
+\t\@echo configured Apache-Test environment, mininum
+\t\@echo
+EOF
 }
 
 sub clean {
