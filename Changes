@@ -1,11 +1,16 @@
 Revision history for Perl extension Apache::Dispatch
 
+0.10-dev
+  - steal the RELEASE doc from Apache::Reload and adapt it - fred
+  - steal the Makefile.PL from A::R, and merge it with our needed custom
+    config directive generation, it detects the version more reliably - fred
+
 0.10_03
-  - use the :withtestmore feature correctly
-  - use like() instead of ok( $foo =~ m/bar/ )
+  - use the :withtestmore feature correctly - fred, thanks to geoff for the spot
+  - use like() instead of ok( $foo =~ m/bar/ ) - fred
 
 0.10_02  07.19.2007
-  - fix the unadvertised feature which allows handling <Location />
+  - fix the unadvertised feature which allows handling <Location /> - fred
 
 0.10_01  10.23.2006
   - move common methods to Apache::Dispatch::Util and adjust @ISA for
