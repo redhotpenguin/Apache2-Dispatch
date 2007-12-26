@@ -267,7 +267,7 @@ EOF
 test::
 \t\@echo
 \t\@echo sorry, cannot run tests without a properly
-\t\@echo configured Apache-Test environment, mininum
+\t\@echo configured Apache-Test environment
 \t\@echo
 EOF
 }
