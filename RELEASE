@@ -6,8 +6,8 @@ Instructions for Apache-Dispatch Release Manager
 
   a. edit ./Changes:
      - find lib -type f -name "*.pm" | \
-         xargs perl -pi -e 's,0.10-dev,0.10-rc1,g'
-     - perl -pi -e 's,0.10-dev,0.10-rc1,g' Changes
+         xargs perl -pi -e 's,0.10-dev,0.10-RC1,g'
+     - perl -pi -e 's,0.10-dev,0.10-RC1,g' Changes
 
      - don't commit these (see dev@ archives)
 
@@ -37,7 +37,7 @@ Instructions for Apache-Dispatch Release Manager
    package to be released
 
   a. edit ./Changes:
-     - remove -rc\d+
+     - remove -RC\d+
      - add release date
 
   b. rerun:
