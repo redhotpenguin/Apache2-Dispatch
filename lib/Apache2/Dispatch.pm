@@ -9,7 +9,7 @@ package Apache2::Dispatch;
 use strict;
 use warnings;
 
-$Apache2::Dispatch::VERSION = '0.10_02';
+$Apache2::Dispatch::VERSION = '0.10';
 
 use mod_perl2 1.99023;
 use Apache2::Const -compile => qw(OK DECLINED SERVER_ERROR);

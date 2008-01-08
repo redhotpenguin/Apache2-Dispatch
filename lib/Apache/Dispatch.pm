@@ -11,7 +11,7 @@ package Apache::Dispatch;
 use strict;
 use warnings;
 
-our $VERSION = '0.10_02';
+our $VERSION = '0.10';
 
 use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);

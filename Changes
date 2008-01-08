@@ -1,11 +1,11 @@
 Revision history for Perl extension Apache::Dispatch
 
-0.10-dev
+0.10 01.08.2008
   - steal the RELEASE doc from Apache::Reload and adapt it - fred
   - steal the Makefile.PL from A::R, and merge it with our needed custom
     config directive generation, it detects the version more reliably - fred
 
-0.10_03
+0.10_03 12.14.2007
   - use the :withtestmore feature correctly - fred, thanks to geoff for the spot
   - use like() instead of ok( $foo =~ m/bar/ ) - fred
 

@@ -3,6 +3,7 @@ MANIFEST
 Makefile.PL
 INSTALL
 README
+RELEASE
 ToDo
 test.pl
 set_pureperl.PL
