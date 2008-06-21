@@ -35,7 +35,7 @@ my $HAS_APACHE_TEST = Apache::Bootstrap->check_for_apache_test();
 
 my %common_opts = (
     PREREQ_PM => \%prereqs,
-    clean     => { FILES => 't/TEST' },
+    clean     => { FILES => 't/TEST, *.xs*'  },
 );
 
 if ( $mp_gen == 1 ) {
@@ -60,7 +60,6 @@ if ( $mp_gen == 1 ) {
 will need a C compiler and Apache/mod_perl sources.\n\n";
 
         $makefile_params{'PL_FILES'} = { 'set_pureperl.PL' => '0' };
-        $makefile_params{'clean'}    = { FILES             => '*.xs*' };
 
         import Apache::ExtUtils qw(command_table);
         use lib 'lib';
