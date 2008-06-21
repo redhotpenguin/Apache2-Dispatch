@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache::Dispatch
 
+0.11
+  - use Apache::Bootstrap to bootstrap mod_perl version
+
 0.10 01.08.2008
   - steal the RELEASE doc from Apache::Reload and adapt it - fred
   - steal the Makefile.PL from A::R, and merge it with our needed custom
