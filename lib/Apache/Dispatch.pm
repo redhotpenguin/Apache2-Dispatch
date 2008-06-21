@@ -88,12 +88,11 @@ sub handler {
     # do some preliminary stuff...
     #---------------------------------------------------------------------
 
-    $log->info("Using Apache::Dispatch") if $debug;
+    $log->debug("Using Apache::Dispatch") if $debug;
 
     # redefine $r as necessary for Apache::Filter 1.013 and above
     if ($filter) {
-        $log->info("\tregistering handler with Apache::Filter")
-          if $debug > 1;
+        $log->debug("\tregistering handler with Apache::Filter") if $debug > 1;
 
         # in case we used DispatchFilter directive instead, make sure
         # that other filters in the chain recognize us...
@@ -104,21 +103,20 @@ sub handler {
         $log = $r->server->log;
     }
 
-    $log->info("\tchecking $uri for possible dispatch...")
-      if $debug > 1;
+    $log->debug("\tchecking $uri for possible dispatch...") if $debug > 1;
 
     # if the uri contains any characters we don't like, bounce...
     # is this necessary?
     if (__PACKAGE__->bogus_uri($uri)) {
         if ($debug) {
-            $log->info("\t$uri has bogus characters...");
-            $log->info("Exiting Apache::Dispatch");
+            $log->error("\t$uri has bogus characters...");
+            $log->debug("Exiting Apache::Dispatch") if $debug;
         }
         return DECLINED;
     }
 
     if ($debug > 1) {
-        $log->info(
+        $log->debug(
                    "\tapplying the following dispatch rules:",
                    "\n\t\tDispatchPrefix: ",
                    $prefix,
@@ -151,9 +149,8 @@ sub handler {
       __PACKAGE__->_translate_uri($r, $prefix, $new_location, $log, $debug);
 
     unless ($class && $method) {
-        $log->info("\tclass and method could not be discovered")
-          if $debug;
-        $log->info("Exiting Apache::Dispatch") if $debug > 0;
+        $log->error("\tclass and method could not be discovered");
+        $log->debug("Exiting Apache::Dispatch") if $debug;;
         return DECLINED;
     }
 
@@ -174,7 +171,7 @@ sub handler {
 
         unless ($rc) {
             $log->error("\tDispatchISA did not return successfully!");
-            $log->info("Exiting Apache::Dispatch");
+            $log->debug("Exiting Apache::Dispatch") if $debug;
             return DECLINED;
         }
     }
@@ -184,19 +181,17 @@ sub handler {
     #---------------------------------------------------------------------
 
     if ($require) {
-        $log->info("\tattempting to require $class...")
-          if $debug > 1;
+        $log->debug("\tattempting to require $class...") if $debug > 1;
 
         eval "require $class";
 
         if ($@) {
-            $log->warn("\tcould not require $class: $@");
-            $log->info("Exiting Apache::Dispatch");
+            $log->error("\tcould not require $class: $@");
+            $log->debug("Exiting Apache::Dispatch") if $debug;
             return DECLINED;
         }
         else {
-            $log->info("\t$class required successfully")
-              if $debug > 1;
+            $log->debug("\t$class required successfully") if $debug > 1;
         }
     }
 
@@ -209,7 +204,7 @@ sub handler {
 
         unless ($rc) {
             $log->error("\tDispatchStat did not return successfully!");
-            $log->info("Exiting Apache::Dispatch");
+            $log->debug("Exiting Apache::Dispatch") if $debug;
             return DECLINED;
         }
     }
@@ -218,7 +213,7 @@ sub handler {
 
         unless ($rc) {
             $log->error("\tDispatchStat did not return successfully!");
-            $log->info("Exiting Apache::Dispatch");
+            $log->debug("Exiting Apache::Dispatch") if $debug;
             return DECLINED;
         }
     }
@@ -232,13 +227,11 @@ sub handler {
       __PACKAGE__->_check_dispatch($object, $method, $autoload, $log, $debug);
 
     if ($handler) {
-        $log->info("\t$uri was translated into $class->$method")
-          if $debug;
+        $log->debug("\t$uri was translated into $class->$method") if $debug;
     }
     else {
-        $log->info("\t$uri did not result in a valid method")
-          if $debug;
-        $log->info("Exiting Apache::Dispatch");
+        $log->error("\t$uri did not result in a valid method");
+        $log->debug("Exiting Apache::Dispatch") if $debug;
         return DECLINED;
     }
 
@@ -287,11 +280,8 @@ sub handler {
     # wrap up...
     #---------------------------------------------------------------------
 
-    $log->info("\tApache::Dispatch is returning $rc")
-      if $debug;
-
-    $log->info("Exiting Apache::Dispatch");
-
+    $log->debug("\tApache::Dispatch is returning $rc") if $debug;
+    $log->debug("Exiting Apache::Dispatch") if $debug;
     return $rc;
 }
 

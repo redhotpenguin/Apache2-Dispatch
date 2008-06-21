@@ -193,12 +193,12 @@ sub _stat {
     $stat{$module} = $^T unless $stat{$module};
 
     if ($INC{$module}) {
-        $log->info("\tchecking $module for reload in pid $$...");
+        $log->debug("\tchecking $module for reload in pid $$...");
 
         my $mtime = (stat $INC{$module})[9];
 
         unless (defined $mtime && $mtime) {
-            $log->warn("Apache::Dispatch cannot find $module!");
+            $log->error("Apache::Dispatch cannot find $module!");
             return 1;
         }
 
@@ -220,11 +220,11 @@ sub _stat {
             $stat{$module} = $mtime;
         }
         else {
-            $log->info("\t$module not modified");
+            $log->debug("\t$module not modified");
         }
     }
     else {
-        $log->warn("Apache::Dispatch: $module not in \%INC!");
+        $log->error("Apache::Dispatch: $module not in \%INC!");
     }
 
     return 1;
@@ -327,8 +327,8 @@ sub _translate_uri {
     (my $class_and_method = $r->uri) =~ s!/!::!g;
     
 	if ($newloc) {
-        $log->info("\tmodifying location from ", $r->location, " to $newloc")
-          if $debug > 1;
+        $log->debug("\tmodifying location from ", $r->location, " to $newloc")
+            if $debug > 1;
         ($location = $newloc) =~ s!/!::!g;
     }
     else {
@@ -355,7 +355,7 @@ sub _translate_uri {
     }
 
     unless ($times) {
-        $log->info("\tLocation substitution failed - uri not translated")
+        $log->debug("\tLocation substitution failed - uri not translated")
           if $debug > 1;
 
         return (undef, undef);
@@ -390,7 +390,7 @@ sub _check_dispatch {
 
     my $coderef;
 
-    $log->info("\tchecking the validity of $class->$method...")
+    $log->debug("\tchecking the validity of $class->$method...")
       if $debug > 1;
 
     if ($autoload) {
@@ -401,10 +401,10 @@ sub _check_dispatch {
     }
 
     if ($coderef && $debug > 1) {
-        $log->info("\t$class->$method is a valid method call");
+        $log->debug("\t$class->$method is a valid method call");
     }
     elsif ($debug > 1) {
-        $log->info("\t$class->$method is not a valid method call");
+        $log->debug("\t$class->$method is not a valid method call");
     }
 
     return $coderef;

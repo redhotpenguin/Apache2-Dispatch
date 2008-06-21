@@ -55,7 +55,7 @@ sub handler {
     # do some preliminary stuff...
     #---------------------------------------------------------------------
 
-    $log->debug("Using Apache2::Dispatch");
+    $log->debug("Using Apache2::Dispatch, debug level $debug") if $debug;
 
     $log->debug("\tchecking $uri for possible dispatch...")
       if $debug > 1;
@@ -64,13 +64,13 @@ sub handler {
     if (__PACKAGE__->bogus_uri($uri)) {
         if ($debug) {
 
-            $log->info("\t$uri has bogus characters...");
-            $log->info("Exiting Apache2::Dispatch");
+            $log->debug("\t$uri has bogus characters...");
+            $log->debug("Exiting Apache2::Dispatch");
         }
         return Apache2::Const::DECLINED;
     }
-    if ($debug > 1) {
-        $log->debug(
+
+    $log->debug(
                     "\tapplying the following dispatch rules:",
                     "\n\t\tDispatchPrefix: ",
                     $prefix,
@@ -90,8 +90,7 @@ sub handler {
                     (@extras ? (join ' ', @extras) : "None"),
                     "\n\t\tDispatchISA: ",
                     (@parents ? (join ' ', @parents) : "None"),
-                   );
-    }
+    ) if $debug > 1;
 
     #---------------------------------------------------------------------
     # create the new object
@@ -123,7 +122,7 @@ sub handler {
 
         unless ($rc) {
             $log->error("\tDispatchISA did not return successfully!");
-            $log->info("Exiting Apache2::Dispatch");
+            $log->debug("Exiting Apache2::Dispatch") if $debug;
             return Apache2::Const::DECLINED;
         }
     }
@@ -133,17 +132,17 @@ sub handler {
     #---------------------------------------------------------------------
 
     if ($require) {
-        $log->info("\tattempting to require $class...");
+        $log->debug("\tattempting to require $class...") if $debug > 1;
 
         eval "require $class";
 
         if ($@) {
             $log->warn("\tcould not require $class: $@");
-            $log->info("Exiting Apache2::Dispatch");
+            $log->debug("Exiting Apache2::Dispatch") if $debug;
             return Apache2::Const::DECLINED;
         }
         else {
-            $log->info("\t$class required successfully");
+            $log->debug("\t$class required successfully") if $debug > 1;
         }
     }
 
@@ -156,7 +155,7 @@ sub handler {
 
         unless ($rc) {
             $log->error("\tDispatchStat did not return successfully!");
-            $log->info("Exiting Apache2::Dispatch");
+            $log->debug("Exiting Apache2::Dispatch") if $debug;
             return Apache2::Const::DECLINED;
         }
     }
@@ -165,7 +164,7 @@ sub handler {
 
         unless ($rc) {
             $log->error("\tDispatchStat did not return successfully!");
-            $log->info("Exiting Apache2::Dispatch");
+            $log->debug("Exiting Apache2::Dispatch") if $debug;
             return Apache2::Const::DECLINED;
         }
     }
@@ -178,11 +177,11 @@ sub handler {
     my $handler = __PACKAGE__->_check_dispatch($object, $method, $autoload, $log, $debug);
 
     if ($handler) {
-        $log->info("\t$uri was translated into $class->$method");
+        $log->debug("\t$uri was translated into $class->$method") if $debug;
     }
     else {
-        $log->info("\t$uri did not result in a valid method");
-        $log->info("Exiting Apache2::Dispatch");
+        $log->error("\t$uri did not result in a valid method");
+        $log->debug("Exiting Apache2::Dispatch") if $debug;
         return Apache2::Const::DECLINED;
     }
 
@@ -228,9 +227,9 @@ sub handler {
     # wrap up...
     #---------------------------------------------------------------------
 
-    $log->info("\tApache2::Dispatch is returning $rc");
+    $log->debug("\tApache2::Dispatch is returning $rc") if $debug;
 
-    $log->info("Exiting Apache2::Dispatch");
+    $log->debug("Exiting Apache2::Dispatch") if $debug;
 
     return $rc;
 }
