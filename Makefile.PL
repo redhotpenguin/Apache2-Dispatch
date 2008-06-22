@@ -5,38 +5,44 @@ use warnings;
 
 use Config;
 
+# minimum version of A::B required
+use Apache::Bootstrap 0.03;
+
+my $bootstrap;
+
 BEGIN {
-    my $AB_VER = 0.02;
-    my $fail_msg = "Warning: prerequisite Apache::Bootstrap $AB_VER not found.";
-    
-    eval { require Apache::Bootstrap };
-    die $fail_msg . "\n" if $@;
-
-    die $fail_msg . " We have $Apache::Bootstrap::VERSION.\n"
-        if $Apache::Bootstrap::VERSION < $AB_VER;
+    # make sure we have at least one minimum version required
+    $bootstrap = Apache::Bootstrap->new({ mod_perl2 => '1.99022', mod_perl => 0, });
 }
 
-my %prereqs = ( );
-my %mp2     = ( mod_perl2 => 1.99022 );
-my %mp1     = ( mod_perl => 0 );
-
+# allow builds with mod_perl one when MOD_PERL_1_BUILD ENV is set
 my $mp_gen;
-if ( $ENV{MOD_PERL_2_BUILD} ) {
-    push @ARGV, "-apxs $ENV{MP_APXS}";
-    my $mp_gen = Apache::Bootstrap->satisfy_mp_generation(2);
+if ( $ENV{MOD_PERL_1_BUILD} ) {
+
+    $mp_gen = $bootstrap->satisfy_mp_generation(1);
+} else {
+
+    # else we build for mp2
+    push @ARGV, "-apxs $ENV{MP_APXS}" if exists $ENV{MP_APXS};
+    $mp_gen = $bootstrap->satisfy_mp_generation(2);
 }
-else {
-    $mp_gen = Apache::Bootstrap->satisfy_mp_generation();
-}
 
-%prereqs = ( $mp_gen == 1 ? %mp1 : %mp2 );
+# check for Apache::Test, $HAS_APACHE_TEST contains version or is undefined
+my $HAS_APACHE_TEST = $bootstrap->check_for_apache_test();
 
-my $HAS_APACHE_TEST = Apache::Bootstrap->check_for_apache_test();
+# calculate common makefile version vars
+my $apache = $bootstrap->apache_major_version;
+my $base_lib = "lib/$apache/Dispatch.pm";
 
-my %common_opts = (
-    PREREQ_PM => \%prereqs,
-    clean     => { FILES => 't/TEST, *.xs*'  },
+# common makefile build options
+my %maker_opts = (
+    PREREQ_PM     => $bootstrap->mp_prereqs,
+    clean         => { FILES => 't/TEST, *.xs*' },
+    NAME          => "$apache\::Dispatch",
+    VERSION_FROM  => $base_lib,
+    ABSTRACT_FROM => $base_lib,
 );
+
 
 if ( $mp_gen == 1 ) {
 
@@ -46,7 +52,7 @@ if ( $mp_gen == 1 ) {
     eval {
         require Apache::ExtUtils;
         require Apache::src;
-      };
+    };
 
     if ( $@ || $ENV{DISPATCH_PUREPERL} ) {
         print
@@ -72,29 +78,13 @@ will need a C compiler and Apache/mod_perl sources.\n\n";
         $makefile_params{'INC'} = $inc;
     }
 
-    require ExtUtils::MakeMaker;
-    ExtUtils::MakeMaker::WriteMakefile(
-        %common_opts,
-        %makefile_params,
-        VERSION_FROM  => "lib/Apache/Dispatch.pm",
-        NAME          => "Apache::Dispatch",
-        ABSTRACT_FROM => 'lib/Apache/Dispatch.pm',
-    );
+    %maker_opts = ( %maker_opts, %makefile_params );
 
 }
-else {
-    require ModPerl::MM;
-    ModPerl::MM::WriteMakefile(
-        %common_opts,
-        VERSION_FROM  => "lib/Apache2/Dispatch.pm",
-        NAME          => "Apache2::Dispatch",
-        ABSTRACT_FROM => 'lib/Apache2/Dispatch.pm',
-    );
-}
 
-if ( $ENV{MOD_PERL_2_BUILD} ) {
-    pop @ARGV;
-}
+$bootstrap->WriteMakefile( %maker_opts );
+
+pop @ARGV unless $ENV{MOD_PERL_1_BUILD};
 
 package MY;
 
