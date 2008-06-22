@@ -84,7 +84,7 @@ will need a C compiler and Apache/mod_perl sources.\n\n";
 
 $bootstrap->WriteMakefile( %maker_opts );
 
-pop @ARGV unless $ENV{MOD_PERL_1_BUILD};
+pop @ARGV if $ENV{MOD_PERL_1_BUILD};
 
 package MY;
 
