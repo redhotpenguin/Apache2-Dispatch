@@ -246,8 +246,8 @@ Apache2::Dispatch - call PerlHandlers with the ease of Registry scripts
 
 httpd.conf:
 
-  PerlModule Apache2::Dispatch
-  PerlModule Bar
+  PerlLoadModule Apache2::Dispatch
+  PerlLoadModule Bar
 
   DispatchExtras Pre Post Error
   DispatchStat On
