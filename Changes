@@ -1,6 +1,7 @@
 Revision history for Perl extension Apache::Dispatch
 
 0.11
+  - document PerlLoadModule for Dispatch* directives - ideysus@annocpan
   - reduce unnecessary log verbosity
   - use Apache::Bootstrap to bootstrap mod_perl version
 
