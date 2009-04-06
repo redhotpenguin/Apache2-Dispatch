@@ -11,12 +11,12 @@ package Apache::Dispatch;
 use strict;
 use warnings;
 
-our $VERSION = '0.11';
 
 use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);
 use Apache::Log			   ();
 use Apache::Dispatch::Util ();
+
 
 BEGIN {
     push @Apache::Dispatch::ISA, qw(Apache::Dispatch::Util);
@@ -317,6 +317,12 @@ __END__
 Apache::Dispatch - call PerlHandlers with the ease of Registry scripts
 
 =head1 SYNOPSIS
+
+Makefile.PL:
+
+    # require util since it can be used outside an apache process
+    PREREQ_PM    => {
+        'Apache::Dispatch::Util'    => 0.11,
 
 httpd.conf:
 

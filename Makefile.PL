@@ -4,13 +4,14 @@ use strict;
 use warnings;
 
 # minimum version of A::B required
-use Apache::Bootstrap 0.03;
+use Apache::Bootstrap 0.05;
 
 my $bootstrap;
 
 BEGIN {
     # make sure we have at least one minimum version required
-    $bootstrap = Apache::Bootstrap->new({ mod_perl2 => '1.99022', mod_perl => 0, });
+    $bootstrap = Apache::Bootstrap->new({ mod_perl2 => 1.99022,
+                                          mod_perl1 => 0, });
 }
 
 # allow builds with mod_perl one when MOD_PERL_1_BUILD ENV is set
@@ -37,7 +38,7 @@ my %maker_opts = (
     PREREQ_PM     => $bootstrap->mp_prereqs,
     clean         => { FILES => 't/TEST, *.xs*' },
     NAME          => "$apache\::Dispatch",
-    VERSION_FROM  => $base_lib,
+    VERSION_FROM  => 'lib/Apache/Dispatch/Util.pm',
     ABSTRACT_FROM => $base_lib,
 );
 

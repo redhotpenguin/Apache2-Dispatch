@@ -4,6 +4,12 @@ Apache::Dispatch - call PerlHandlers with the ease of Registry scripts
 
 SYNOPSIS
 
+Makefile.PL:
+
+    # require util since it can be used outside an apache process
+    PREREQ_PM    => {
+        'Apache::Dispatch::Util'    => 0.11,
+
 httpd.conf:
 
   PerlModule Apache::Dispatch

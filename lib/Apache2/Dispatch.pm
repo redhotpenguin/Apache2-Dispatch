@@ -9,8 +9,6 @@ package Apache2::Dispatch;
 use strict;
 use warnings;
 
-$Apache2::Dispatch::VERSION = '0.11';
-
 use mod_perl2 1.99023;
 use Apache2::Const -compile => qw(OK DECLINED SERVER_ERROR);
 use Apache2::Log         ();
@@ -243,6 +241,12 @@ __END__
 Apache2::Dispatch - call PerlHandlers with the ease of Registry scripts
 
 =head1 SYNOPSIS
+
+Makefile.PL:
+
+    # require util since it can be used outside an apache process
+    PREREQ_PM    => {
+        'Apache::Dispatch::Util'    => 0.11,
 
 httpd.conf:
 

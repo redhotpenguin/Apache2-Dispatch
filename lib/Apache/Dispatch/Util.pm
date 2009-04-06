@@ -3,6 +3,8 @@ package Apache::Dispatch::Util;
 use strict;
 use warnings;
 
+our $VERSION = 0.11;
+
 =head1 NAME
 
   Apache::Dispatch::Util - methods for Apache::Dispatch and Apache2::Dispatch
