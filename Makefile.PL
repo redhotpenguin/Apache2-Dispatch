@@ -3,8 +3,10 @@ package Apache::Dispatch;
 use strict;
 use warnings;
 
+use version;
+
 # minimum version of A::B required
-use Apache::Bootstrap 0.06;
+use Apache::Bootstrap 0.05;
 
 my $bootstrap;
 

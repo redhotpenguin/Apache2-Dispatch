@@ -1,6 +1,7 @@
 Revision history for Perl extension Apache::Dispatch
 
 0.11 04.05.2009 20:34 PDT
+  - remove t/TEST.PL (it is not needed)
   - put version in Apache::Dispatch::Util to avoid issue with Apache2::Module
   - document PerlLoadModule for Dispatch* directives - ideysus@annocpan
   - reduce unnecessary log verbosity
