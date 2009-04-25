@@ -23,5 +23,4 @@ t/02extras.t
 t/03filter.t
 t/04oo.t
 t/conf/extra.last.conf.in
-t/TEST.PL
 META.yml                                 Module meta-data (added by MakeMaker)

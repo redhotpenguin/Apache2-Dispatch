@@ -47,7 +47,7 @@ if ($Apache::Dispatch::PUREPERL == 0) {
     require Apache::ModuleConfig;
     require DynaLoader;
     push @Apache::Dispatch::ISA, qw(DynaLoader);
-    __PACKAGE__->bootstrap($VERSION);
+    __PACKAGE__->bootstrap($Apache::Dispatch::Util::VERSION);
 }
 
 sub handler {
@@ -323,6 +323,7 @@ Makefile.PL:
     # require util since it can be used outside an apache process
     PREREQ_PM    => {
         'Apache::Dispatch::Util'    => 0.11,
+    }
 
 httpd.conf:
 
