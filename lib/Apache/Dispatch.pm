@@ -17,6 +17,7 @@ use Apache::Constants qw(OK DECLINED SERVER_ERROR);
 use Apache::Log			   ();
 use Apache::Dispatch::Util ();
 
+our $VERSION = $Apache::Dispatch::Util::VERSION;
 
 BEGIN {
     push @Apache::Dispatch::ISA, qw(Apache::Dispatch::Util);
@@ -47,7 +48,7 @@ if ($Apache::Dispatch::PUREPERL == 0) {
     require Apache::ModuleConfig;
     require DynaLoader;
     push @Apache::Dispatch::ISA, qw(DynaLoader);
-    __PACKAGE__->bootstrap($Apache::Dispatch::Util::VERSION);
+    __PACKAGE__->bootstrap($VERSION);
 }
 
 sub handler {

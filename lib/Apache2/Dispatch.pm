@@ -18,6 +18,8 @@ use Apache2::RequestUtil ();
 use Apache::Dispatch::Util;
 push @Apache2::Dispatch::ISA, qw(Apache::Dispatch::Util);
 
+our $VERSION = $Apache::Dispatch::Util::VERSION;
+
 # Initialize the directives
 my $directives = __PACKAGE__->directives();
 

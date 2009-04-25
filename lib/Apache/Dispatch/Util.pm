@@ -3,7 +3,7 @@ package Apache::Dispatch::Util;
 use strict;
 use warnings;
 
-our $VERSION = 0.12-dev;
+our $VERSION = 0.12;
 
 =head1 NAME
 
