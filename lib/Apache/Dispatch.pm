@@ -1,7 +1,5 @@
 package Apache::Dispatch;
 
-# $Id: Dispatch.pm,v 1.34 2002/12/02 19:29:26 geoff Exp $
-
 #---------------------------------------------------------------------
 #
 # usage: PerlHandler Apache::Dispatch
