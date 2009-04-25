@@ -9,6 +9,8 @@ package Apache2::Dispatch;
 use strict;
 use warnings;
 
+our $VERSION = '0.13-dev';
+
 use mod_perl2 1.99023;
 use Apache2::Const -compile => qw(OK DECLINED SERVER_ERROR);
 use Apache2::Log         ();
@@ -17,8 +19,6 @@ use Apache2::RequestRec  ();
 use Apache2::RequestUtil ();
 use Apache::Dispatch::Util;
 push @Apache2::Dispatch::ISA, qw(Apache::Dispatch::Util);
-
-our $VERSION = $Apache::Dispatch::Util::VERSION;
 
 # Initialize the directives
 my $directives = __PACKAGE__->directives();
