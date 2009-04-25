@@ -81,4 +81,5 @@ Instructions for Apache-Dispatch Release Manager
      $ perl -pi -e 's/(\d+)\.(\d+)/join(".", $1, $2+1)/eg' RELEASE
 
   d. commit Changes
-     % svn ci -m "start 0.13-dev cycle" Changes RELEASE lib/Apache/Dispatch.pm
+     % svn ci -m "start 0.13-dev cycle" Changes RELEASE lib/Apache/Dispatch.pm \
+        lib/Apache2/Dispatch.pm lib/Apache/Dispatch/Util.pm
