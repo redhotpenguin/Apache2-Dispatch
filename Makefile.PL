@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # minimum version of A::B required
-use Apache::Bootstrap 0.06;
+use Apache::Bootstrap 0.07;
 
 my $bootstrap;
 
@@ -14,16 +14,19 @@ BEGIN {
                                           mod_perl  => 1.30 });
 }
 
-# allow builds with mod_perl one when MOD_PERL_1_BUILD ENV is set
-my $mp_gen;
-if ( $ENV{MOD_PERL_1_BUILD} ) {
+# try mp2 first, but allow builds with mod_perl one 
+# when MOD_PERL_1_BUILD ENV is set (for maintainers mostly)
+my $mp_gen = $bootstrap->satisfy_mp_generation(2);
+if (! $ENV{MOD_PERL_1_BUILD} && $mp_gen) {
 
-    $mp_gen = $bootstrap->satisfy_mp_generation(1);
-} else {
-
-    # else we build for mp2
+	warn("building for mp2 since MOD_PERL_1_BUILD not set");
     push @ARGV, "-apxs $ENV{MP_APXS}" if exists $ENV{MP_APXS};
-    $mp_gen = $bootstrap->satisfy_mp_generation(2);
+
+} elsif ( $mp_gen = $bootstrap->satisfy_mp_generation(1)) {
+
+	warn("building for mp1");
+} else {
+	die "no mp generation could be satisfied\n";
 }
 
 # check for Apache::Test, $HAS_APACHE_TEST contains version or is undefined

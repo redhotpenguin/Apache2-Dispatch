@@ -1,6 +1,7 @@
 Revision history for Perl extension Apache::Dispatch
 
 0.13-dev
+  - fix some of the Makefile.PL logic so that mp2 is checked first
 
 0.12 04.25.2009 16:06 PST
   - set library versions to $Apache::Dispatch::Util::VERSION so PAUSE
