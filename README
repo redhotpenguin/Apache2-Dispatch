@@ -1,12 +1,12 @@
 NAME
-    Apache::Dispatch - call PerlHandlers with the ease of Registry scripts
+    Apache2::Dispatch - call PerlHandlers with the ease of Registry scripts
 
 SYNOPSIS
     Makefile.PL:
 
-        # require util since it can be used outside an apache process
+        # require a:d:util since it can be used outside an apache process
         PREREQ_PM    => {
-            'Apache::Dispatch::Util'    => 0.11,
+            'Apache::Dispatch::Util'    => 0.13,
         }
 
     httpd.conf:
@@ -28,6 +28,11 @@ SYNOPSIS
       </Location>
 
 DESCRIPTION
+    As of version 0.13, Apache2::Dispatch is now the preferred package over
+    Apache::Dispatch.  The ASF end of lifed Apache 1.3, so future versions
+    of Apache2::Dispatch will default to installing against mod_perl2.
+    mod_perl1 is still very much supported through, thanks to Apache::Boostrap.
+
     Apache::Dispatch translates $r->uri into a class and method and runs it
     as a PerlHandler. Basically, this allows you to call PerlHandlers as you
     would Regsitry scripts without having to load your httpd.conf with a

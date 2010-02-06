@@ -3,42 +3,51 @@ package Apache::Dispatch;
 use strict;
 use warnings;
 
+use constant DEBUG => $ENV{AB_DEBUG} || 0;
+
+#########################################################################
 # minimum version of A::B required
-use Apache::Bootstrap 0.07;
+my $ab = 0.07;
+eval { require Apache::Bootstrap };
 
-my $bootstrap;
+die "Please install Apache::Bootstrap $ab" if $@;
 
-BEGIN {
-    # make sure we have at least one minimum version required
-    $bootstrap = Apache::Bootstrap->new({ mod_perl2 => 1.99022,
-                                          mod_perl  => 1.30 });
-}
+die "Apache::Bootstrap $ab required, found " . $Apache::Bootstrap::VERSION
+    if ($Apache::Bootstrap::VERSION < $ab);
 
-# try mp2 first, but allow builds with mod_perl one 
+# make sure we have at least one minimum version of mod_perl
+my $bs = eval { Apache::Bootstrap->new({ mod_perl2 => 1.99022,
+                                         mod_perl  => 1.30 }) };
+do { $! = 255; die($@); } if $@;
+##########################################################################
+
+
+# try mp2 first, but allow builds with mod_perl one
 # when MOD_PERL_1_BUILD ENV is set (for maintainers mostly)
-my $mp_gen = $bootstrap->satisfy_mp_generation(2);
+my $mp_gen = $bs->satisfy_mp_generation(2);
 if (! $ENV{MOD_PERL_1_BUILD} && $mp_gen) {
 
-	warn("building for mp2 since MOD_PERL_1_BUILD not set");
+	warn("building for mp2 since MOD_PERL_1_BUILD not set") if DEBUG;
     push @ARGV, "-apxs $ENV{MP_APXS}" if exists $ENV{MP_APXS};
 
-} elsif ( $mp_gen = $bootstrap->satisfy_mp_generation(1)) {
+} elsif ( $mp_gen = $bs->satisfy_mp_generation(1)) {
 
-	warn("building for mp1");
+	warn("building for mp1") if DEBUG;
 } else {
 	die "no mp generation could be satisfied\n";
 }
 
 # check for Apache::Test, $HAS_APACHE_TEST contains version or is undefined
-my $HAS_APACHE_TEST = $bootstrap->check_for_apache_test();
+my $HAS_APACHE_TEST = $bs->check_for_apache_test();
 
 # calculate common makefile version vars
-my $apache = $bootstrap->apache_major_version;
+
+my $apache = $bs->apache_major_version;
 my $base_lib = "lib/$apache/Dispatch.pm";
 
 # common makefile build options
 my %maker_opts = (
-    PREREQ_PM     => $bootstrap->mp_prereqs,
+    PREREQ_PM     => $bs->mp_prereqs,
     clean         => { FILES => 't/TEST, *.xs*' },
     NAME          => "$apache\::Dispatch",
     VERSION_FROM  => 'lib/Apache/Dispatch/Util.pm',
@@ -84,7 +93,7 @@ will need a C compiler and Apache/mod_perl sources.\n\n";
 
 }
 
-$bootstrap->WriteMakefile( %maker_opts );
+$bs->WriteMakefile( %maker_opts );
 
 pop @ARGV if $ENV{MOD_PERL_1_BUILD};
 

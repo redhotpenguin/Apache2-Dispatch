@@ -1,6 +1,7 @@
 Revision history for Perl extension Apache::Dispatch
 
-0.13-dev
+0.13 02.06.2010 13:08 PST
+  - require Apache::Bootstrap 0.07 to install on mp1/mp2 properly
   - fix some of the Makefile.PL logic so that mp2 is checked first
 
 0.12 04.25.2009 16:06 PST

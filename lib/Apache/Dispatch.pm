@@ -9,12 +9,12 @@ package Apache::Dispatch;
 use strict;
 use warnings;
 
-our $VERSION = '0.13-dev';
-
 use mod_perl 1.2401;
 use Apache::Constants qw(OK DECLINED SERVER_ERROR);
 use Apache::Log			   ();
 use Apache::Dispatch::Util ();
+
+our $VERSION = $Apache::Dispatch::Util::VERSION;
 
 BEGIN {
     push @Apache::Dispatch::ISA, qw(Apache::Dispatch::Util);
