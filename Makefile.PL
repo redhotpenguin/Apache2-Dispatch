@@ -9,11 +9,12 @@ use constant DEBUG => $ENV{AB_DEBUG} || 0;
 # minimum version of A::B required
 my $ab = 0.07;
 eval { require Apache::Bootstrap };
+do { $! = 255; die "Please install Apache::Bootstrap $ab"; } if $@;
 
-die "Please install Apache::Bootstrap $ab" if $@;
-
-die "Apache::Bootstrap $ab required, found " . $Apache::Bootstrap::VERSION
-    if ($Apache::Bootstrap::VERSION < $ab);
+if ($Apache::Bootstrap::VERSION < $ab) {
+    $! = 255;
+    die "Apache::Bootstrap $ab required, found " . $Apache::Bootstrap::VERSION;
+}
 
 # make sure we have at least one minimum version of mod_perl
 my $bs = eval { Apache::Bootstrap->new({ mod_perl2 => 1.99022,
