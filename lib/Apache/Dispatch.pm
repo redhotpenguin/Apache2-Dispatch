@@ -14,7 +14,7 @@ use Apache::Constants qw(OK DECLINED SERVER_ERROR);
 use Apache::Log			   ();
 use Apache::Dispatch::Util ();
 
-our $VERSION = $Apache::Dispatch::Util::VERSION;
+our $VERSION = 0.15;
 
 BEGIN {
     push @Apache::Dispatch::ISA, qw(Apache::Dispatch::Util);

@@ -1,5 +1,8 @@
 Revision history for Perl extension Apache::Dispatch
 
+0.15 02.12.2010 18:38 PST
+  - set explicit versions in files so MakeMaker can parse them
+
 0.14 02.08.2010 23:09 PST
   - set the exit code to 255 if Apache::Bootstrap dependencies missing
 
